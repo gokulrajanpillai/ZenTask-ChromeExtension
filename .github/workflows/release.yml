@@ -37,7 +37,7 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          name: Release ${{ steps.date.outputs.date }}
+          name: ${{ steps.date.outputs.date }}
           tag_name: v${{ steps.date.outputs.date }}
           files: zen-task-extension.zip
           fail_on_unmatched_files: true
