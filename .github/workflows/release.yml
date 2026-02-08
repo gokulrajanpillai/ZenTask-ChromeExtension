@@ -30,11 +30,31 @@ jobs:
       - name: Package Extension
         run: node package-release.js
 
-      - name: Get Date
+      - name: Get Date and Version
         id: date
-        run: echo "date=$(date +'%y.%m.%d')" >> $GITHUB_OUTPUT
+        run: |
+          echo "date=$(date +'%y.%m.%d')" >> $GITHUB_OUTPUT
+          # Chrome versions must be integers, so 02 is 2. Strip leading zeros.
+          # 2026.02.08 -> 26.2.8
+          year=$(date +'%y')
+          month=$(date +'%m' | sed 's/^0*//')
+          day=$(date +'%d' | sed 's/^0*//')
+          echo "version=$year.$month.$day" >> $GITHUB_OUTPUT
 
-      - name: Create Release
+      - name: Bump Manifest Version
+        run: |
+          # Simple sed to replace version in manifest.json before build
+          # Assumes "version": "..." is present
+          sed -i '' 's/"version": ".*"/"version": "${{ steps.date.outputs.version }}"/' public/manifest.json
+          cat public/manifest.json | grep version
+
+      - name: Build Extension
+        run: npm run build
+
+      - name: Package Extension
+        run: node package-release.js
+
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           name: ${{ steps.date.outputs.date }}
@@ -42,3 +62,13 @@ jobs:
           files: zen-task-extension.zip
           fail_on_unmatched_files: true
           generate_release_notes: true
+
+      - name: Publish to Chrome Web Store
+        uses: mobilefirstllc/cws-publish@latest
+        with:
+          action: 'upload' # Change to 'publish' to auto-publish. 'upload' updates the draft.
+          client_id: ${{ secrets.CLIENT_ID }}
+          client_secret: ${{ secrets.CLIENT_SECRET }}
+          refresh_token: ${{ secrets.REFRESH_TOKEN }}
+          extension_id: ${{ secrets.EXTENSION_ID }}
+          zip_file: zen-task-extension.zip
