@@ -4,26 +4,25 @@ import { TimerDisplay } from '../components/TimerDisplay';
 import { TaskList } from '../components/TaskList';
 import { Footer } from '../components/Footer';
 import { StorageService } from '../services/storage';
+import { SoundManager } from '../services/audio';
 import { TimerState, Task } from '../types';
 
 const app = document.getElementById('app');
+const soundManager = new SoundManager();
 
 if (app) {
     app.innerHTML = `
       <div class="zen-layout">
         <header id="header-zone"></header>
-        <main id="main-zone"></main>
+        <main id="main-zone">
+            <div id="timer-section"></div>
+            <div id="tasks-section"></div>
+        </main>
         <footer id="footer-zone"></footer>
       </div>
     `;
 
     const header = new Header(document.getElementById('header-zone')!);
-    // Actually, Main zone should contain both TaskList and Timer.
-    // Let's adjust layout
-    document.getElementById('main-zone')!.innerHTML = `
-        <div id="timer-section"></div>
-        <div id="tasks-section"></div>
-    `;
     const timerComponent = new TimerDisplay(document.getElementById('timer-section')!);
     const taskListComponent = new TaskList(document.getElementById('tasks-section')!);
     const footer = new Footer(document.getElementById('footer-zone')!);
@@ -36,6 +35,11 @@ if (app) {
     const refresh = async () => {
         timerState = await chrome.runtime.sendMessage({ type: 'GET_STATE' });
         tasks = await StorageService.getTasks();
+
+        // Sync Audio settings on refresh to ensure volume/enabled state is correct
+        const settings = await StorageService.getSettings();
+        await soundManager.updateSettings(settings);
+
         render();
     };
 
@@ -44,8 +48,8 @@ if (app) {
 
         // Header
         const statusText = timerState.isRunning
-            ? `Focusing on: ${getTaskTitle(timerState.activeTaskId)}`
-            : (timerState.mode === 'focus' ? 'Ready when you are' : 'Break time');
+            ? (timerState.mode === 'focus' ? 'Focusing...' : 'Resting...')
+            : 'ZenTask';
 
         header.render(statusText, toggleSound, openSettings);
 
@@ -68,22 +72,17 @@ if (app) {
         );
 
         // Footer
-        footer.render(timerState.mode !== 'focus');
+        footer.render(timerState.mode !== 'focus' && timerState.isRunning);
+
+        // Audio Logic Sync (Ensure correct ambience is playing based on state)
+        // Background handles logic, but actual audio playback might need to happen here if not in offscreen
+        // Current plan: Listen for cue messages, but relying on background for state is safer.
+        // However, we can also check state here and trigger ambience.
+        syncAmbience(timerState);
     };
 
     // Helpers
-    const getTaskTitle = (id: string | null) => {
-        if (!id) return '...';
-        return tasks.find(t => t.id === id)?.title || 'Task';
-    };
-
     const getActiveTaskId = () => {
-        // If one is already active in UI but not in timer...
-        // For now, if starting from timer button, maybe pick the first task?
-        // Or we require starting from the task list. 
-        // User requirements: "Let me start one active task at a time"
-        // "When I press Start on a task: It becomes active"
-        // "Buttons: Start focus" -> checks if there is an active task?
         return timerState?.activeTaskId;
     };
 
@@ -94,7 +93,10 @@ if (app) {
             isCompleted: false,
             estimatedMinutes: 25,
             createdAt: Date.now(),
-            order: tasks.length
+            order: tasks.length,
+            totalTimeMs: 0,
+            sessionTimeMs: 0,
+            pomodorosCompleted: 0
         };
         tasks.push(newTask);
         await StorageService.saveTasks(tasks);
@@ -111,11 +113,20 @@ if (app) {
     };
 
     const startTask = async (id: string) => {
+        // Stop current if running to ensure clean switch
+        if (timerState?.isRunning) {
+            await chrome.runtime.sendMessage({ type: 'PAUSE_TIMER' });
+        }
         await chrome.runtime.sendMessage({ type: 'START_TIMER', payload: { taskId: id } });
         refresh();
     };
 
     const deleteTask = async (id: string) => {
+        // If deleting active task, maybe pause timer?
+        if (timerState?.activeTaskId === id && timerState.isRunning) {
+            await chrome.runtime.sendMessage({ type: 'PAUSE_TIMER' });
+        }
+
         tasks = tasks.filter(t => t.id !== id);
         await StorageService.saveTasks(tasks);
         refresh();
@@ -123,17 +134,39 @@ if (app) {
 
     const toggleSound = async () => {
         const settings = await StorageService.getSettings();
-        await StorageService.saveSettings({ ...settings, enableSound: !settings.enableSound });
-        // Optional: show toast or visual indicator
+        const newEnabled = !settings.enableSound;
+        await StorageService.saveSettings({ ...settings, enableSound: newEnabled });
+        await soundManager.updateSettings({ ...settings, enableSound: newEnabled });
+
+        if (!newEnabled) soundManager.stopAmbience();
+        else syncAmbience(timerState!);
     };
 
     const openSettings = () => {
-        import('../components/SettingsModal').then(({ SettingsModal }) => {
-            new SettingsModal(() => {
-                // On close, refresh to apply settings (like timer duration)
+        import('../components/SettingsModal').then(({ SettingsPanel }) => {
+            const panel = new SettingsPanel(() => {
                 refresh();
-            }).render();
+            });
+            panel.open();
         });
+    };
+
+    const syncAmbience = async (state: TimerState) => {
+        const settings = await StorageService.getSettings();
+        if (!settings.enableSound) {
+            soundManager.stopAmbience();
+            return;
+        }
+
+        if (state.isRunning) {
+            if (state.mode === 'focus') {
+                soundManager.playAmbience(settings.focusSound, settings.focusVolume);
+            } else {
+                soundManager.playAmbience(settings.breakSound, settings.breakVolume);
+            }
+        } else {
+            soundManager.stopAmbience();
+        }
     };
 
     // Initial Load
@@ -144,9 +177,8 @@ if (app) {
         if (message.type === 'TIMER_UPDATE') {
             timerState = message.payload;
             render();
+        } else if (message.type === 'PLAY_CUE') {
+            soundManager.playCue(message.payload);
         }
     });
-
-    // Polling for smoothness (optional, since background sends updates usually on seconds)
-    // But background only updates on alarm tick.
 }
