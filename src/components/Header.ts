@@ -3,7 +3,16 @@ import { Settings } from '../types';
 export class Header {
   constructor(private container: HTMLElement) { }
 
+  private lastTheme: string = '';
+  private lastMusicEnabled: boolean | null = null;
+
   render(settings: Settings, onToggleSound: () => void, onOpenSettings: () => void) {
+    if (this.lastTheme === settings.theme && this.lastMusicEnabled === settings.musicEnabled) {
+      return; // No layout change needed
+    }
+
+    this.lastTheme = settings.theme;
+    this.lastMusicEnabled = settings.musicEnabled;
     const themeClass = `theme-${settings.theme}`;
 
     this.container.innerHTML = `

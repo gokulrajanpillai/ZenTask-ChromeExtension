@@ -89,6 +89,13 @@ if (app) {
             renderListView();
         }
 
+        // Apply global theme class
+        const layoutEl = document.querySelector('.zen-layout');
+        if (layoutEl) {
+            layoutEl.classList.remove('theme-forest', 'theme-rain', 'theme-summer', 'theme-space');
+            layoutEl.classList.add(`theme-${currentSettings.theme}`);
+        }
+
         globalVisualizer.updateState(timerState, currentSettings);
         syncAmbience(timerState);
     };
@@ -215,7 +222,7 @@ if (app) {
         if (controlsEl) {
             if (timerState.isRunning) {
                 controlsEl.innerHTML = `
-                  <button class="btn-primary" id="fv-pause">Pause</button>
+                  <button class="btn-primary btn-pause" id="fv-pause">Pause</button>
                   <button class="btn-secondary" id="fv-skip" style="padding:10px 14px;">⏭</button>
                 `;
             } else {

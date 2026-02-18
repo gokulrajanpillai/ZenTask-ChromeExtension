@@ -14,7 +14,7 @@ export class TimerDisplay {
             <div class="timer-time" id="time-display">${minutes}:${seconds}</div>
 
             <div class="timer-controls">
-              <button id="main-action-btn" class="btn-primary">
+              <button id="main-action-btn" class="btn-primary ${state.isRunning ? 'btn-pause' : ''}">
                 ${state.isRunning ? 'Pause' : 'Start Focus'}
               </button>
               <button id="skip-btn" class="btn-secondary" style="padding:10px 14px;">⏭</button>

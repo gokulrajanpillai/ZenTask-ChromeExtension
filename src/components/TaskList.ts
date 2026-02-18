@@ -17,43 +17,58 @@ export class TaskList {
             return (a.order || 0) - (b.order || 0);
         });
 
-        this.container.innerHTML = `
-      <div class="task-list-panel">
-        <div class="tasks-header">
-            <span>Today's Cycle</span>
-            <span style="font-size:0.8em;opacity:0.7">${tasks.filter(t => t.isCompleted).length}/${tasks.length}</span>
-        </div>
+        // Check if we need to full render or just updates
+        const panel = this.container.querySelector('.task-list-panel');
+        if (!panel) {
+            this.container.innerHTML = `
+                <div class="task-list-panel">
+                    <div class="tasks-header">
+                        <span class="header-title">Today's Cycle</span>
+                        <span class="header-count" style="font-size:0.8em;opacity:0.7">${tasks.filter(t => t.isCompleted).length}/${tasks.length}</span>
+                    </div>
 
-        <div class="task-list">
-          ${sortedTasks.length === 0
-                ? '<div class="empty-state">Focus on one thing at a time.</div>'
-                : sortedTasks.map(task => this.renderTaskRow(task, activeTaskId)).join('')}
-        </div>
-        
-        <div class="task-input-container">
-            <input type="text" id="new-task-input" class="task-input" placeholder="What is your next focus?" />
-            <button id="add-task-btn" class="btn-secondary" style="padding:10px 16px;">+</button>
-        </div>
-      </div>
-    `;
+                    <div class="task-list">
+                        ${sortedTasks.length === 0
+                    ? '<div class="empty-state">Focus on one thing at a time.</div>'
+                    : sortedTasks.map(task => this.renderTaskRow(task, activeTaskId)).join('')}
+                    </div>
+                    
+                    <div class="task-input-container">
+                        <input type="text" id="new-task-input" class="task-input" placeholder="What is your next focus?" />
+                        <button id="add-task-btn" class="btn-secondary" style="padding:10px 16px;">+</button>
+                    </div>
+                </div>
+            `;
 
-        // Event Listeners
-        const input = this.container.querySelector('#new-task-input') as HTMLInputElement;
-        const addBtn = this.container.querySelector('#add-task-btn');
+            // Stable listeners for input
+            const input = this.container.querySelector('#new-task-input') as HTMLInputElement;
+            const addBtn = this.container.querySelector('#add-task-btn');
 
-        const handleAdd = () => {
-            if (input.value.trim()) {
-                onAddTask(input.value.trim());
-                input.value = '';
+            const handleAdd = () => {
+                if (input.value.trim()) {
+                    onAddTask(input.value.trim());
+                    input.value = '';
+                }
+            };
+
+            addBtn?.addEventListener('click', handleAdd);
+            input?.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleAdd();
+            });
+        } else {
+            // Update items only
+            const countEl = panel.querySelector('.header-count');
+            if (countEl) countEl.textContent = `${tasks.filter(t => t.isCompleted).length}/${tasks.length}`;
+
+            const listEl = panel.querySelector('.task-list');
+            if (listEl) {
+                listEl.innerHTML = sortedTasks.length === 0
+                    ? '<div class="empty-state">Focus on one thing at a time.</div>'
+                    : sortedTasks.map(task => this.renderTaskRow(task, activeTaskId)).join('');
             }
-        };
+        }
 
-        addBtn?.addEventListener('click', handleAdd);
-        input?.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleAdd();
-        });
-
-        // Delegation
+        // Re-bind listeners for dynamic items
         this.container.querySelectorAll('.task-item').forEach(el => {
             const id = (el as HTMLElement).dataset.id!;
 
