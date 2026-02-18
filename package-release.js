@@ -13,7 +13,7 @@ if (!fs.existsSync(distDir)) {
 try {
     // Requires 'zip' command line tool (standard on Mac/Linux)
     console.log(`Creating ${zipName} from ${distDir}...`);
-    execSync(`zip -r ../${zipName} .`, { cwd: path.join(__dirname, distDir) });
+    execSync(`zip -r ../${zipName} .`, { cwd: path.resolve(process.cwd(), distDir) });
     console.log(`Successfully created ${zipName}`);
 } catch (error) {
     console.error('Failed to zip distribution:', error);
