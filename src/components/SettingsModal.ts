@@ -64,21 +64,29 @@ export class SettingsPanel {
               <option value="space" ${this.settings.theme === 'space' ? 'selected' : ''}>Deep Space</option>
             </select>
           </div>
+          <div class="setting-item">
+            <label>Background Interactivity</label>
+            <input type="checkbox" id="s-bg-interact" ${this.settings.backgroundInteractions ? 'checked' : ''}>
+          </div>
+          <div class="setting-item">
+            <label>Smooth Transitions</label>
+            <input type="checkbox" id="s-bg-trans" ${this.settings.backgroundTransitions ? 'checked' : ''}>
+          </div>
         </div>
 
         <div class="settings-group">
-          <h3>Audio</h3>
+          <h3>Ambient Music</h3>
           <div class="setting-item">
-            <label>Enable sounds</label>
-            <input type="checkbox" id="s-enable" ${this.settings.enableSound ? 'checked' : ''}>
+            <label>Enable music</label>
+            <input type="checkbox" id="s-music-enable" ${this.settings.musicEnabled ? 'checked' : ''}>
           </div>
           <div class="setting-item">
-            <label>Master volume</label>
-            <input type="range" id="s-master" min="0" max="100" value="${this.settings.masterVolume || 80}">
+            <label>Music volume</label>
+            <input type="range" id="s-music-vol" min="0" max="100" value="${this.settings.musicVolume || 50}">
           </div>
           <div class="setting-item">
-            <label>Transition cues</label>
-            <input type="checkbox" id="s-cues" ${this.settings.enableCues !== false ? 'checked' : ''}>
+            <label>Transition chime</label>
+            <input type="checkbox" id="s-chime-enable" ${this.settings.showTransitionChime ? 'checked' : ''}>
           </div>
         </div>
 
@@ -143,9 +151,11 @@ export class SettingsPanel {
       longBreakDuration: parseInt(val('#s-long')) || 15,
       cyclesBeforeLongBreak: parseInt(val('#s-cycles')) || 4,
       theme: val('#s-theme') as any,
-      enableSound: checked('#s-enable'),
-      enableCues: checked('#s-cues'),
-      masterVolume: parseInt(val('#s-master')) || 80,
+      backgroundInteractions: checked('#s-bg-interact'),
+      backgroundTransitions: checked('#s-bg-trans'),
+      musicEnabled: checked('#s-music-enable'),
+      musicVolume: parseInt(val('#s-music-vol')) || 50,
+      showTransitionChime: checked('#s-chime-enable'),
       autoReturnToListOnBreak: checked('#s-auto-return'),
     };
 

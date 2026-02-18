@@ -13,10 +13,12 @@ const DEFAULT_SETTINGS: Settings = {
     cyclesBeforeLongBreak: 4,
 
     theme: 'forest',
-    enableSound: true,
-    masterVolume: 80,
-    enableCues: true,
-    cueVolume: 70,
+    backgroundInteractions: true,
+    backgroundTransitions: true,
+
+    musicEnabled: true,
+    musicVolume: 50,
+    showTransitionChime: true,
 
     enableBreakReminders: true,
     backgroundIntensity: 50,

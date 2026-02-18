@@ -35,12 +35,15 @@ export interface Settings {
     longBreakDuration: number;
     cyclesBeforeLongBreak: number;
 
-    // Theme & Audio
+    // Theme & Interactivity
     theme: AppTheme;
-    enableSound: boolean;
-    masterVolume: number;
-    enableCues: boolean;
-    cueVolume: number;
+    backgroundInteractions: boolean; // For Section B
+    backgroundTransitions: boolean;  // For Section C
+
+    // Audio
+    musicEnabled: boolean;
+    musicVolume: number;
+    showTransitionChime: boolean;
 
     // Visuals & Misc
     enableBreakReminders: boolean;

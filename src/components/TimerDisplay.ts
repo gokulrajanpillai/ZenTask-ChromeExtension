@@ -1,4 +1,4 @@
-import { TimerState, AppTheme } from '../types';
+import { TimerState, Settings } from '../types';
 import { ZenVisualizer } from './ZenVisualizer';
 
 export class TimerDisplay {
@@ -6,7 +6,7 @@ export class TimerDisplay {
 
   constructor(private container: HTMLElement) { }
 
-  render(state: TimerState, theme: AppTheme, onStart: () => void, onPause: () => void, onSkip: () => void, onViewClick: () => void) {
+  render(state: TimerState, settings: Settings, onStart: () => void, onPause: () => void, onSkip: () => void, onViewClick: () => void) {
     const minutes = Math.floor(state.remainingSeconds / 60).toString().padStart(2, '0');
     const seconds = (state.remainingSeconds % 60).toString().padStart(2, '0');
 
@@ -62,7 +62,7 @@ export class TimerDisplay {
       (e) => { e.stopPropagation(); state.isRunning ? onPause() : onStart(); });
     this.bindButton('#skip-btn', undefined, (e) => { e.stopPropagation(); onSkip(); });
 
-    if (this.visualizer) this.visualizer.updateState(state, theme);
+    if (this.visualizer) this.visualizer.updateState(state, settings);
   }
 
   private getStatusText(state: TimerState): string {

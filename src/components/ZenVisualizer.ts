@@ -1,12 +1,27 @@
-import { TimerState, AppTheme } from '../types';
+import { TimerState, AppTheme, Settings } from '../types';
 
 export class ZenVisualizer {
     private ctx: CanvasRenderingContext2D;
     private animationId: number = 0;
     private state: TimerState | null = null;
+    private settings: Settings | null = null;
     private theme: AppTheme = 'forest';
     private phase = 0;
-    private particles: { x: number; y: number; r: number; speed: number; angle: number; dist: number; color?: string }[] = [];
+
+    // Smooth Transitions
+    private currentSpeedMult = 1.0;
+    private currentAlphaMult = 1.0;
+    private readonly TRANSITION_LERP = 0.05; // ~1.2s at 60fps
+
+    // Advanced Particle System
+    private particles: {
+        x: number; y: number; r: number;
+        vx: number; vy: number;
+        baseDist: number; angle: number;
+        life?: number; opacity?: number;
+    }[] = [];
+
+    private ripples: { x: number; y: number; r: number; life: number }[] = [];
     private mouse = { x: 0, y: 0, active: false };
     private prefersReducedMotion = false;
 
@@ -18,29 +33,42 @@ export class ZenVisualizer {
 
     start() { this.animate(); }
     stop() { cancelAnimationFrame(this.animationId); }
-    updateState(s: TimerState, theme: AppTheme) {
+    updateState(s: TimerState, settings: Settings) {
         this.state = s;
-        if (this.theme !== theme) {
-            this.theme = theme;
-            this.initParticles(); // Re-init for theme colors
+        this.settings = settings;
+        if (this.theme !== settings.theme) {
+            this.theme = settings.theme;
+            this.initParticles();
         }
     }
+
     updateMouse(x: number, y: number) {
+        if (this.prefersReducedMotion || !this.settings?.backgroundInteractions) return;
         this.mouse.x = x;
         this.mouse.y = y;
         this.mouse.active = true;
+
+        if (this.theme === 'rain' && Math.random() > 0.8) {
+            this.ripples.push({ x, y, r: 0, life: 1.0 });
+        }
     }
 
     private initParticles() {
         this.particles = [];
-        const count = this.theme === 'space' ? 60 : 30;
+        const count = this.theme === 'space' ? 80 : 40;
+        const w = this.canvas.width;
+        const h = this.canvas.height;
+
         for (let i = 0; i < count; i++) {
             this.particles.push({
-                x: 0, y: 0,
-                r: Math.random() * 1.8 + 0.4,
-                speed: Math.random() * 0.3 + 0.05,
+                x: Math.random() * w,
+                y: Math.random() * h,
+                r: Math.random() * 2 + 0.5,
+                vx: (Math.random() - 0.5) * 0.2,
+                vy: (Math.random() - 0.5) * 0.2,
+                baseDist: Math.random() * 100 + 40,
                 angle: Math.random() * Math.PI * 2,
-                dist: Math.random() * 80 + 30,
+                opacity: Math.random() * 0.5 + 0.2
             });
         }
     }
@@ -59,82 +87,112 @@ export class ZenVisualizer {
 
         this.ctx.clearRect(0, 0, w, h);
 
-        // ── Theme Palettes ──
         const palettes: Record<AppTheme, { r: number, g: number, b: number }> = {
-            'forest': { r: 94, g: 190, b: 120 }, // Verdant Green
-            'rain': { r: 94, g: 170, b: 239 },   // Azure Blue
-            'summer': { r: 239, g: 190, b: 94 }, // Golden Sun
-            'space': { r: 160, g: 120, b: 239 }  // Deep Nebula
+            'forest': { r: 90, g: 180, b: 110 },
+            'rain': { r: 100, g: 170, b: 230 },
+            'summer': { r: 240, g: 190, b: 100 },
+            'space': { r: 150, g: 100, b: 240 }
         };
 
         const themeColor = palettes[this.theme];
-        let speed = 0.015;
-        let coreAlpha = 0.1;
-        let particleAlpha = 0.15;
+        let targetSpeedMult = 1.0;
+        let targetAlphaMult = 1.0;
 
-        if (this.state) {
-            if (this.state.isRunning) {
-                speed = this.state.mode === 'focus' ? 0.04 : 0.012;
-                coreAlpha = this.state.mode === 'focus' ? 0.2 : 0.08;
-                particleAlpha = this.state.mode === 'focus' ? 0.3 : 0.12;
-            }
+        if (this.state?.isRunning) {
+            targetSpeedMult = this.state.mode === 'focus' ? 1.5 : 0.8;
+            targetAlphaMult = this.state.mode === 'focus' ? 1.2 : 0.6;
         }
 
-        if (this.prefersReducedMotion) speed = 0;
-        this.phase += speed;
-
-        // ── Mouse Influence ──
-        let ox = 0, oy = 0;
-        if (this.mouse.active) {
-            // Parallax shift based on mouse relative to center
-            ox = (this.mouse.x - cx) * 0.05;
-            oy = (this.mouse.y - cy) * 0.05;
+        // Apply Transition Lerp
+        if (this.settings?.backgroundTransitions) {
+            this.currentSpeedMult += (targetSpeedMult - this.currentSpeedMult) * this.TRANSITION_LERP;
+            this.currentAlphaMult += (targetAlphaMult - this.currentAlphaMult) * this.TRANSITION_LERP;
+        } else {
+            this.currentSpeedMult = targetSpeedMult;
+            this.currentAlphaMult = targetAlphaMult;
         }
 
-        const r = 90 + Math.sin(this.phase) * 12;
+        const effSpeed = 0.015 * this.currentSpeedMult;
+        if (!this.prefersReducedMotion) this.phase += effSpeed;
 
-        // Outer glow
-        const outerGrad = this.ctx.createRadialGradient(cx + ox, cy + oy, r * 0.2, cx + ox, cy + oy, r * 2.0);
-        outerGrad.addColorStop(0, `rgba(${themeColor.r},${themeColor.g},${themeColor.b},${coreAlpha})`);
-        outerGrad.addColorStop(0.7, `rgba(${themeColor.r},${themeColor.g},${themeColor.b},${coreAlpha * 0.2})`);
-        outerGrad.addColorStop(1, 'rgba(0,0,0,0)');
+        // ── Theme Specific Background Layer ──
+        this.drawCore(cx, cy, themeColor, this.currentAlphaMult);
 
-        this.ctx.fillStyle = outerGrad;
-        this.ctx.beginPath();
-        this.ctx.arc(cx + ox, cy + oy, r * 2.0, 0, Math.PI * 2);
-        this.ctx.fill();
-
-        // ── Particles ──
-        if (!this.prefersReducedMotion) {
-            this.particles.forEach(p => {
-                p.angle += p.speed * speed;
-                const orbit = r + p.dist + Math.sin(this.phase + p.angle * 2) * 10;
-
-                // Base orbit position
-                let px = cx + Math.cos(p.angle) * orbit;
-                let py = cy + Math.sin(p.angle) * orbit;
-
-                // Mouse interaction for particles: gentle attraction/repulsion
-                if (this.mouse.active) {
-                    const dx = this.mouse.x - px;
-                    const dy = this.mouse.y - py;
-                    const d = Math.sqrt(dx * dx + dy * dy);
-                    if (d < 100) {
-                        const force = (100 - d) * 0.02;
-                        px += dx * force;
-                        py += dy * force;
-                    }
-                }
-
-                // Distance fade
-                const distToCenter = Math.sqrt(Math.pow(px - cx, 2) + Math.pow(py - cy, 2));
-                const fade = Math.max(0, 1 - distToCenter / (r * 2.8));
-
-                this.ctx.fillStyle = `rgba(${themeColor.r},${themeColor.g},${themeColor.b},${particleAlpha * fade})`;
+        // ── Ripple FX (Rain) ──
+        if (this.theme === 'rain') {
+            this.ripples = this.ripples.filter(r => r.life > 0);
+            this.ripples.forEach(r => {
+                r.r += 2;
+                r.life -= 0.02;
+                this.ctx.strokeStyle = `rgba(${themeColor.r}, ${themeColor.g}, ${themeColor.b}, ${r.life * 0.4})`;
+                this.ctx.lineWidth = 1;
                 this.ctx.beginPath();
-                this.ctx.arc(px, py, p.r, 0, Math.PI * 2);
-                this.ctx.fill();
+                this.ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
+                this.ctx.stroke();
             });
         }
+
+        // ── Interaction Logic ──
+        const interact = this.settings?.backgroundInteractions && !this.prefersReducedMotion;
+
+        this.particles.forEach(p => {
+            // Base Movement
+            p.x += p.vx * this.currentSpeedMult;
+            p.y += p.vy * this.currentSpeedMult;
+
+            // Wrapping
+            if (p.x < 0) p.x = w; if (p.x > w) p.x = 0;
+            if (p.y < 0) p.y = h; if (p.y > h) p.y = 0;
+
+            let drawX = p.x;
+            let drawY = p.y;
+
+            if (interact) {
+                const dx = this.mouse.x - p.x;
+                const dy = this.mouse.y - p.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (this.theme === 'space') {
+                    // Repulsion
+                    if (dist < 150) {
+                        const force = (150 - dist) * 0.05;
+                        drawX -= dx / dist * force;
+                        drawY -= dy / dist * force;
+                    }
+                } else if (this.theme === 'forest') {
+                    // Parallax motes
+                    drawX += (this.mouse.x - cx) * 0.02 * p.r;
+                    drawY += (this.mouse.y - cy) * 0.02 * p.r;
+                } else if (this.theme === 'summer') {
+                    // Heat shimmer / Drift away
+                    if (dist < 100) {
+                        p.vx += (Math.random() - 0.5) * 0.1;
+                        p.vy -= 0.05; // float up
+                    }
+                }
+            }
+
+            // Render Particle
+            const alpha = (p.opacity || 0.5) * this.currentAlphaMult;
+            this.ctx.fillStyle = `rgba(${themeColor.r}, ${themeColor.g}, ${themeColor.b}, ${alpha})`;
+            this.ctx.beginPath();
+            this.ctx.arc(drawX, drawY, p.r, 0, Math.PI * 2);
+            this.ctx.fill();
+        });
+    }
+
+    private drawCore(cx: number, cy: number, color: { r: number, g: number, b: number }, alphaMult: number) {
+        const r = 90 + Math.sin(this.phase) * 12;
+        const ox = this.mouse.active ? (this.mouse.x - cx) * 0.05 : 0;
+        const oy = this.mouse.active ? (this.mouse.y - cy) * 0.05 : 0;
+
+        const grad = this.ctx.createRadialGradient(cx + ox, cy + oy, 0, cx + ox, cy + oy, r * 2.5);
+        grad.addColorStop(0, `rgba(${color.r}, ${color.g}, ${color.b}, ${0.15 * alphaMult})`);
+        grad.addColorStop(1, 'rgba(0,0,0,0)');
+
+        this.ctx.fillStyle = grad;
+        this.ctx.beginPath();
+        this.ctx.arc(cx + ox, cy + oy, r * 2.5, 0, Math.PI * 2);
+        this.ctx.fill();
     }
 }

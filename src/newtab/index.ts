@@ -70,7 +70,7 @@ if (app) {
         const statusText = timerState.isRunning
             ? (timerState.mode === 'focus' ? 'Focusing...' : 'Resting...')
             : 'ZenTask';
-        header.render(statusText, currentSettings.enableSound, toggleSound, openSettings);
+        header.render(statusText, currentSettings.musicEnabled, toggleSound, openSettings);
 
         // Footer
         footer.render(timerState.mode !== 'focus' && timerState.isRunning);
@@ -94,7 +94,7 @@ if (app) {
 
         timerComponent.render(
             timerState,
-            currentSettings!.theme,
+            currentSettings!,
             () => {
                 chrome.runtime.sendMessage({ type: 'START_TIMER', payload: { taskId: getActiveTaskId() } }).then(() => {
                     viewMode = 'focus';
@@ -204,7 +204,7 @@ if (app) {
             if (ring) ring.setAttribute('stroke-dashoffset', String(dashOffset));
         }
 
-        if (focusVisualizer) focusVisualizer.updateState(timerState, currentSettings.theme);
+        if (focusVisualizer) focusVisualizer.updateState(timerState, currentSettings);
 
         // Render controls
         const controlsEl = focusViewEl.querySelector('#fv-controls')!;
@@ -367,8 +367,8 @@ if (app) {
     // ── Sound toggle ──────────────────────────────────────────────
     const toggleSound = async () => {
         if (!currentSettings) currentSettings = await StorageService.getSettings();
-        const newEnabled = !currentSettings.enableSound;
-        currentSettings = { ...currentSettings, enableSound: newEnabled };
+        const newEnabled = !currentSettings.musicEnabled;
+        currentSettings = { ...currentSettings, musicEnabled: newEnabled };
         await StorageService.saveSettings(currentSettings);
         await soundManager.updateSettings(currentSettings);
 
@@ -389,7 +389,7 @@ if (app) {
     // ── Audio sync ────────────────────────────────────────────────
     const syncAmbience = async (state: TimerState) => {
         if (!currentSettings) currentSettings = await StorageService.getSettings();
-        if (!currentSettings.enableSound) { await soundManager.stopAmbience(); return; }
+        if (!currentSettings.musicEnabled) { await soundManager.stopAmbience(); return; }
 
         if (state.isRunning) {
             await soundManager.playThemeAmbience(currentSettings.theme, state.mode);
