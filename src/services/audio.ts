@@ -1,4 +1,4 @@
-import { SoundType, BreakSoundType, Settings } from '../types';
+import { AppTheme, TimerMode, Settings } from '../types';
 
 export class SoundManager {
     private ctx: AudioContext | null = null;
@@ -6,9 +6,30 @@ export class SoundManager {
     private ambienceGain: GainNode | null = null;
     private cueGain: GainNode | null = null;
 
-    private ambienceSource: AudioBufferSourceNode | null = null;
-    private currentAmbienceType: string = 'none';
+    private ambienceElement: HTMLAudioElement | null = null;
+    private ambienceSourceNode: MediaElementAudioSourceNode | null = null;
+    private currentAmbienceId: string = 'none';
     private cuesEnabled = true;
+
+    // Theme Sound Mapping
+    private readonly THEME_SOUNDS: Record<AppTheme, { focus: string; break: string }> = {
+        'forest': {
+            focus: 'https://actions.google.com/sounds/v1/ambiences/forest_daybreak.ogg',
+            break: 'https://actions.google.com/sounds/v1/water/stream_water_flowing.ogg'
+        },
+        'rain': {
+            focus: 'https://actions.google.com/sounds/v1/ambiences/rain_heavy_loud.ogg',
+            break: 'https://actions.google.com/sounds/v1/water/rain_on_roof.ogg'
+        },
+        'summer': {
+            focus: 'https://actions.google.com/sounds/v1/ambiences/field_at_night.ogg',
+            break: 'https://actions.google.com/sounds/v1/ambiences/morning_birds.ogg'
+        },
+        'space': {
+            focus: 'white_noise', // Generated
+            break: 'singing_bowls' // Generated
+        }
+    };
 
     private async init() {
         if (this.ctx) return;
@@ -36,7 +57,6 @@ export class SoundManager {
     }
 
     // ── Transition Bong ──────────────────────────────────────────────
-    // Plays a rich, resonant bong (like a singing bowl strike) for all state transitions.
     async playCue(_type: 'start' | 'break' | 'resume' | 'complete') {
         if (!this.cuesEnabled) return;
         if (!this.ctx) await this.init();
@@ -44,27 +64,23 @@ export class SoundManager {
 
         const now = this.ctx.currentTime;
 
-        // Fundamental
         const osc1 = this.ctx.createOscillator();
         osc1.type = 'sine';
-        osc1.frequency.setValueAtTime(220, now); // A3
+        osc1.frequency.setValueAtTime(220, now);
 
-        // Harmonic
         const osc2 = this.ctx.createOscillator();
         osc2.type = 'sine';
-        osc2.frequency.setValueAtTime(440, now); // A4
+        osc2.frequency.setValueAtTime(440, now);
 
-        // Sub-harmonic for depth
         const osc3 = this.ctx.createOscillator();
         osc3.type = 'sine';
-        osc3.frequency.setValueAtTime(660, now); // E5
+        osc3.frequency.setValueAtTime(660, now);
 
         const envelope = this.ctx.createGain();
         envelope.connect(this.cueGain);
 
-        // Bell-like envelope: sharp attack, long natural decay
         envelope.gain.setValueAtTime(0, now);
-        envelope.gain.linearRampToValueAtTime(0.6, now + 0.01);  // instant attack
+        envelope.gain.linearRampToValueAtTime(0.6, now + 0.01);
         envelope.gain.exponentialRampToValueAtTime(0.3, now + 0.3);
         envelope.gain.exponentialRampToValueAtTime(0.01, now + 3.0);
 
@@ -78,128 +94,89 @@ export class SoundManager {
         });
     }
 
-    // ── Ambience ──────────────────────────────────────────────────────
-    async playAmbience(type: SoundType | BreakSoundType, volume: number) {
+    // ── Theme Experience ─────────────────────────────────────────────
+    async playThemeAmbience(theme: AppTheme, mode: TimerMode) {
         if (!this.ctx) await this.init();
         if (!this.ctx || !this.ambienceGain) return;
 
-        // Same track → just update volume
-        if (this.currentAmbienceType === type && this.ambienceSource) {
-            this.ambienceGain.gain.setTargetAtTime(volume / 100, this.ctx.currentTime, 0.5);
-            return;
-        }
+        const sounds = this.THEME_SOUNDS[theme];
+        const soundToPlay = mode === 'focus' ? sounds.focus : sounds.break;
+        const ambienceId = `${theme}_${mode}`;
+
+        if (this.currentAmbienceId === ambienceId) return;
 
         await this.stopAmbience();
-        if (type === 'none') return;
+        this.currentAmbienceId = ambienceId;
 
-        this.currentAmbienceType = type;
+        // Default soft volume for themes
+        const volume = 0.5;
         this.ambienceGain.gain.setValueAtTime(0, this.ctx.currentTime);
-        this.ambienceGain.gain.linearRampToValueAtTime(volume / 100, this.ctx.currentTime + 2);
+        this.ambienceGain.gain.linearRampToValueAtTime(volume, this.ctx.currentTime + 3);
 
-        // Generate the appropriate procedural noise
-        const buffer = this.generateNoise(type);
-        this.ambienceSource = this.ctx.createBufferSource();
-        this.ambienceSource.buffer = buffer;
-        this.ambienceSource.loop = true;
-        this.ambienceSource.connect(this.ambienceGain);
-        this.ambienceSource.start();
+        if (soundToPlay.startsWith('http')) {
+            this.ambienceElement = new Audio(soundToPlay);
+            this.ambienceElement.crossOrigin = 'anonymous';
+            this.ambienceElement.loop = true;
+
+            this.ambienceSourceNode = this.ctx.createMediaElementSource(this.ambienceElement);
+            this.ambienceSourceNode.connect(this.ambienceGain);
+
+            await this.ambienceElement.play().catch(e => console.error('Audio play failed:', e));
+        } else if (soundToPlay !== 'none') {
+            const buffer = this.generateNoise(soundToPlay);
+            const source = this.ctx.createBufferSource();
+            source.buffer = buffer;
+            source.loop = true;
+            source.connect(this.ambienceGain);
+            source.start();
+            (this as any).generatedSource = source;
+        }
     }
 
     async stopAmbience() {
-        if (this.ambienceSource) {
-            try {
-                if (this.ctx && this.ambienceGain) {
-                    this.ambienceGain.gain.cancelScheduledValues(this.ctx.currentTime);
-                    this.ambienceGain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.5);
-                }
-                const old = this.ambienceSource;
-                setTimeout(() => { try { old.stop(); old.disconnect(); } catch (_e) { /* noop */ } }, 600);
-            } catch (_e) { /* noop */ }
-            this.ambienceSource = null;
+        if (this.ctx && this.ambienceGain) {
+            this.ambienceGain.gain.cancelScheduledValues(this.ctx.currentTime);
+            this.ambienceGain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.8);
         }
-        this.currentAmbienceType = 'none';
+
+        if (this.ambienceElement) {
+            const el = this.ambienceElement;
+            const node = this.ambienceSourceNode;
+            setTimeout(() => {
+                el.pause();
+                el.src = '';
+                node?.disconnect();
+            }, 1000);
+            this.ambienceElement = null;
+            this.ambienceSourceNode = null;
+        }
+
+        if ((this as any).generatedSource) {
+            const src = (this as any).generatedSource;
+            setTimeout(() => { try { src.stop(); src.disconnect(); } catch { } }, 1000);
+            (this as any).generatedSource = null;
+        }
+
+        this.currentAmbienceId = 'none';
     }
 
-    // ── Noise Generators ──────────────────────────────────────────────
     private generateNoise(type: string): AudioBuffer {
         if (!this.ctx) throw new Error('No AudioContext');
-
         const sr = this.ctx.sampleRate;
-        const len = 4 * sr; // 4 second loop
+        const len = 4 * sr;
         const buf = this.ctx.createBuffer(1, len, sr);
         const data = buf.getChannelData(0);
 
-        switch (type) {
-            case 'white_noise':
-                for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
-                break;
-
-            case 'rain':
-                // Rain = filtered noise bursts layered over soft brown noise base
-                for (let i = 0; i < len; i++) {
-                    const white = Math.random() * 2 - 1;
-                    const brown = i > 0 ? (data[i - 1] + 0.02 * white) / 1.02 : white;
-                    // Occasional "drop" peaks
-                    const drop = Math.random() > 0.997 ? (Math.random() * 0.4) : 0;
-                    data[i] = brown * 2.5 + drop;
-                }
-                break;
-
-            case 'coffee_shop':
-                // Low rumble + occasional mid-freq murmur bursts
-                for (let i = 0; i < len; i++) {
-                    const white = Math.random() * 2 - 1;
-                    const brown = i > 0 ? (data[i - 1] + 0.015 * white) / 1.015 : white;
-                    // Periodic "chatter" modulation
-                    const mod = Math.sin(i / sr * 2 * Math.PI * 3.7) * 0.15;
-                    const chatter = Math.random() > 0.99 ? (Math.random() * 0.2 - 0.1) : 0;
-                    data[i] = (brown * 2.0 + mod + chatter) * 0.8;
-                }
-                break;
-
-            case 'singing_bowls':
-                // Slow sine sweep with harmonics — meditative drone
-                for (let i = 0; i < len; i++) {
-                    const t = i / sr;
-                    const f1 = 174 + Math.sin(t * 0.3) * 8; // slow frequency drift
-                    const f2 = f1 * 2;
-                    const f3 = f1 * 3;
-                    data[i] = (Math.sin(2 * Math.PI * f1 * t) * 0.5 +
-                        Math.sin(2 * Math.PI * f2 * t) * 0.25 +
-                        Math.sin(2 * Math.PI * f3 * t) * 0.1) * 0.6;
-                }
-                break;
-
-            case 'ocean_waves':
-                // Slow amplitude-modulated noise to simulate wave crests
-                for (let i = 0; i < len; i++) {
-                    const t = i / sr;
-                    const white = Math.random() * 2 - 1;
-                    const brown = i > 0 ? (data[i - 1] + 0.02 * white) / 1.02 : white;
-                    // Wave envelope: slow rise and fall (~6 second cycle)
-                    const wave = (Math.sin(2 * Math.PI * t / 6) + 1) / 2;
-                    data[i] = brown * 3.0 * (0.2 + wave * 0.8);
-                }
-                break;
-
-            case 'forest_stream':
-                // Soft pink-ish noise with gentle high-frequency trickle
-                for (let i = 0; i < len; i++) {
-                    const white = Math.random() * 2 - 1;
-                    const pink = i > 0 ? (data[i - 1] + 0.03 * white) / 1.03 : white;
-                    // High-freq trickle
-                    const trickle = Math.sin(i * 0.8 + Math.random() * 3) * 0.05;
-                    data[i] = (pink * 2.2 + trickle) * 0.7;
-                }
-                break;
-
-            default:
-                // Fallback: brown noise
-                for (let i = 0; i < len; i++) {
-                    const w = Math.random() * 2 - 1;
-                    data[i] = i > 0 ? (data[i - 1] + 0.02 * w) / 1.02 : w;
-                    data[i] *= 3.5;
-                }
+        if (type === 'white_noise') {
+            for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * 0.1;
+        }
+        else if (type === 'singing_bowls') {
+            for (let i = 0; i < len; i++) {
+                const t = i / sr;
+                const f1 = 174 + Math.sin(t * 0.1) * 2;
+                const f2 = f1 * 1.5;
+                data[i] = (Math.sin(2 * Math.PI * f1 * t) * 0.4 + Math.sin(2 * Math.PI * f2 * t) * 0.2) * 0.3;
+            }
         }
 
         return buf;

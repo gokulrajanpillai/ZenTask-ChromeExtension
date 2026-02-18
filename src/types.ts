@@ -26,8 +26,7 @@ export interface TimerState {
     cyclesCompleted: number;
 }
 
-export type SoundType = 'none' | 'white_noise' | 'rain' | 'coffee_shop';
-export type BreakSoundType = 'none' | 'singing_bowls' | 'ocean_waves' | 'forest_stream';
+export type AppTheme = 'forest' | 'rain' | 'summer' | 'space';
 
 export interface Settings {
     // Timer
@@ -36,19 +35,19 @@ export interface Settings {
     longBreakDuration: number;
     cyclesBeforeLongBreak: number;
 
-    // Audio
+    // Theme & Audio
+    theme: AppTheme;
     enableSound: boolean;
     masterVolume: number;
-    focusSound: SoundType;
-    focusVolume: number;
-    breakSound: BreakSoundType;
-    breakVolume: number;
     enableCues: boolean;
     cueVolume: number;
 
     // Visuals & Misc
-    enableBreakReminders: boolean; // Keep for legacy, though specific reminder setting might be redundant with auto-switches
+    enableBreakReminders: boolean;
     backgroundIntensity: number;
     reduceMotion: boolean;
+
+    // UX
+    autoReturnToListOnBreak: boolean;
 }
 

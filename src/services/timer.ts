@@ -1,14 +1,5 @@
 import { TimerState, TimerMode, Settings } from '../types';
 import { StorageService } from './storage';
-// We need to import audio service, but since audio needs user interaction to start context, 
-// we might trigger it via messages or lazily. 
-// For now, let's assume we can trigger audio cues here if context is allowed.
-// But AudioContext in Service Worker (MV3) is tricky. 
-// Actually, audio playback usually needs to happen in an Offscreen Document or the Popup/NewTab.
-// However, the requirement is "full sound system". 
-// A common pattern for MV3 extensions is to open an offscreen document for audio.
-// For this step, I will stick to logic here and broadcast 'PLAY_SOUND' messages 
-// which the frontend (NewTab) will pick up to play via the SoundManager we just made.
 
 const ALARM_NAME = 'zen-timer-tick';
 
@@ -30,6 +21,22 @@ export class TimerService {
     async init() {
         this.settings = await StorageService.getSettings();
         const savedState = await StorageService.getTimerState();
+
+        // Listen for live settings changes
+        StorageService.onChange((changes) => {
+            if (changes['zen_settings']) {
+                StorageService.getSettings().then(s => {
+                    this.settings = s;
+                    // If we're not running, update remaining seconds too
+                    if (!this.state.isRunning) {
+                        this.state.remainingSeconds = this.getDurationForMode(this.state.mode);
+                        this.saveState();
+                        this.broadcastState();
+                        this.updateBadge();
+                    }
+                });
+            }
+        });
 
         if (savedState) {
             this.state = savedState;
@@ -89,7 +96,6 @@ export class TimerService {
     }
 
     private getDurationForMode(mode: TimerMode): number {
-        // Fallback or user settings
         switch (mode) {
             case 'focus': return (this.settings?.focusDuration || 25) * 60;
             case 'break': return (this.settings?.breakDuration || 5) * 60;
@@ -101,13 +107,9 @@ export class TimerService {
         if (!this.state.isRunning) return;
 
         const now = Date.now();
-        // Calculate exact elapsed since last tick to avoid drift
-        // But for this simple logic, using passed seconds (from alarm or catchup) is okay
-        // We update lastTick to now
         this.state.lastTick = now;
         this.state.remainingSeconds -= seconds;
 
-        // Update task time stats
         if (this.state.mode === 'focus' && this.state.activeTaskId) {
             await this.updateTaskTime(this.state.activeTaskId, seconds * 1000);
         }
@@ -123,15 +125,9 @@ export class TimerService {
     }
 
     private async handleTimerComplete() {
-        // Logic: 
-        // 1. If Focus -> Increment cycles, maybe cycle -> break.
-        // 2. If Break -> cycle -> focus.
-        // 3. Play sound.
-
         if (this.state.mode === 'focus') {
             this.state.cyclesCompleted++;
 
-            // Update stats
             if (this.state.activeTaskId) {
                 await this.incrementTaskPomodoros(this.state.activeTaskId);
             }
@@ -143,15 +139,13 @@ export class TimerService {
             this.broadcastSound('break');
 
         } else {
-            // Break over, back to work
             this.state.mode = 'focus';
             this.broadcastSound('resume');
         }
 
-        // Auto-start next cycle? Requirement says "Timer cycles run continuously"
         this.state.remainingSeconds = this.getDurationForMode(this.state.mode);
         this.state.lastTick = Date.now();
-        this.state.isRunning = true; // Keep running
+        this.state.isRunning = true;
 
         await this.saveState();
         this.broadcastState();
@@ -160,10 +154,8 @@ export class TimerService {
     }
 
     private async switchMode() {
-        // Manual skip behavior
         if (this.state.mode === 'focus') {
-            this.state.mode = 'break'; // Force short break on skip? Or smart skip?
-            // Let's just toggle for simplicity as per common expected behavior
+            this.state.mode = 'break';
         } else {
             this.state.mode = 'focus';
         }
@@ -175,14 +167,9 @@ export class TimerService {
         this.updateBadge();
     }
 
-    // Task Data Helpers
-    private async updateActiveTaskStatus(active: boolean) {
+    private async updateActiveTaskStatus(_active: boolean) {
         if (!this.state.activeTaskId) return;
-        // Optimization: In a real app we might cache tasks in memory in service too
-        // but fetching is safe for now.
-        // For now, we might not need to store "isActive" on the task itself if we rely on TimerState.activeTaskId
-        // But let's log it for debugging
-        console.debug(`Task ${this.state.activeTaskId} active state: ${active}`);
+        // console.debug(`Task ${this.state.activeTaskId} active state: ${active}`);
     }
 
     private async updateTaskTime(taskId: string, elapsedMs: number) {

@@ -12,18 +12,16 @@ const DEFAULT_SETTINGS: Settings = {
     longBreakDuration: 15,
     cyclesBeforeLongBreak: 4,
 
+    theme: 'forest',
     enableSound: true,
     masterVolume: 80,
-    focusSound: 'none',
-    focusVolume: 50,
-    breakSound: 'singing_bowls',
-    breakVolume: 50,
     enableCues: true,
     cueVolume: 70,
 
     enableBreakReminders: true,
     backgroundIntensity: 50,
     reduceMotion: false,
+    autoReturnToListOnBreak: false,
 };
 
 const DEFAULT_TIMER: TimerState = {
