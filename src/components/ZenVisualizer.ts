@@ -55,7 +55,7 @@ export class ZenVisualizer {
 
     private initParticles() {
         this.particles = [];
-        const count = this.theme === 'space' ? 80 : 40;
+        const count = this.theme === 'space' ? 120 : 60;
         const w = this.canvas.width;
         const h = this.canvas.height;
 
@@ -63,12 +63,12 @@ export class ZenVisualizer {
             this.particles.push({
                 x: Math.random() * w,
                 y: Math.random() * h,
-                r: Math.random() * 2 + 0.5,
-                vx: (Math.random() - 0.5) * 0.2,
-                vy: (Math.random() - 0.5) * 0.2,
-                baseDist: Math.random() * 100 + 40,
+                r: Math.random() * 2.5 + 0.5,
+                vx: (Math.random() - 0.5) * 0.4,
+                vy: (Math.random() - 0.5) * 0.4,
+                baseDist: Math.random() * 200 + 100,
                 angle: Math.random() * Math.PI * 2,
-                opacity: Math.random() * 0.5 + 0.2
+                opacity: Math.random() * 0.4 + 0.1
             });
         }
     }
@@ -99,8 +99,8 @@ export class ZenVisualizer {
         let targetAlphaMult = 1.0;
 
         if (this.state?.isRunning) {
-            targetSpeedMult = this.state.mode === 'focus' ? 1.5 : 0.8;
-            targetAlphaMult = this.state.mode === 'focus' ? 1.2 : 0.6;
+            targetSpeedMult = this.state.mode === 'focus' ? 1.4 : 0.7;
+            targetAlphaMult = this.state.mode === 'focus' ? 1.3 : 0.6;
         }
 
         // Apply Transition Lerp
@@ -112,20 +112,20 @@ export class ZenVisualizer {
             this.currentAlphaMult = targetAlphaMult;
         }
 
-        const effSpeed = 0.015 * this.currentSpeedMult;
+        const effSpeed = 0.012 * this.currentSpeedMult;
         if (!this.prefersReducedMotion) this.phase += effSpeed;
 
         // ── Theme Specific Background Layer ──
-        this.drawCore(cx, cy, themeColor, this.currentAlphaMult);
+        this.drawCore(w, h, themeColor, this.currentAlphaMult);
 
         // ── Ripple FX (Rain) ──
         if (this.theme === 'rain') {
             this.ripples = this.ripples.filter(r => r.life > 0);
             this.ripples.forEach(r => {
-                r.r += 2;
-                r.life -= 0.02;
-                this.ctx.strokeStyle = `rgba(${themeColor.r}, ${themeColor.g}, ${themeColor.b}, ${r.life * 0.4})`;
-                this.ctx.lineWidth = 1;
+                r.r += 3;
+                r.life -= 0.015;
+                this.ctx.strokeStyle = `rgba(${themeColor.r}, ${themeColor.g}, ${themeColor.b}, ${r.life * 0.3})`;
+                this.ctx.lineWidth = 1.5;
                 this.ctx.beginPath();
                 this.ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
                 this.ctx.stroke();
@@ -153,21 +153,19 @@ export class ZenVisualizer {
                 const dist = Math.sqrt(dx * dx + dy * dy);
 
                 if (this.theme === 'space') {
-                    // Repulsion
-                    if (dist < 150) {
-                        const force = (150 - dist) * 0.05;
+                    if (dist < 200) {
+                        const force = (200 - dist) * 0.04;
                         drawX -= dx / dist * force;
                         drawY -= dy / dist * force;
                     }
-                } else if (this.theme === 'forest') {
-                    // Parallax motes
-                    drawX += (this.mouse.x - cx) * 0.02 * p.r;
-                    drawY += (this.mouse.y - cy) * 0.02 * p.r;
+                } else if (this.theme === 'forest' || this.theme === 'rain') {
+                    // Subtle parallax
+                    drawX += (this.mouse.x - cx) * 0.01 * p.r;
+                    drawY += (this.mouse.y - cy) * 0.01 * p.r;
                 } else if (this.theme === 'summer') {
-                    // Heat shimmer / Drift away
-                    if (dist < 100) {
-                        p.vx += (Math.random() - 0.5) * 0.1;
-                        p.vy -= 0.05; // float up
+                    if (dist < 150) {
+                        p.vx += (Math.random() - 0.5) * 0.05;
+                        p.vy -= 0.03;
                     }
                 }
             }
@@ -181,18 +179,18 @@ export class ZenVisualizer {
         });
     }
 
-    private drawCore(cx: number, cy: number, color: { r: number, g: number, b: number }, alphaMult: number) {
-        const r = 90 + Math.sin(this.phase) * 12;
-        const ox = this.mouse.active ? (this.mouse.x - cx) * 0.05 : 0;
-        const oy = this.mouse.active ? (this.mouse.y - cy) * 0.05 : 0;
+    private drawCore(w: number, h: number, color: { r: number, g: number, b: number }, alphaMult: number) {
+        const cx = w / 2;
+        const cy = h / 2;
+        const radius = Math.max(w, h) * 0.8;
+        const ox = this.mouse.active ? (this.mouse.x - cx) * 0.03 : 0;
+        const oy = this.mouse.active ? (this.mouse.y - cy) * 0.03 : 0;
 
-        const grad = this.ctx.createRadialGradient(cx + ox, cy + oy, 0, cx + ox, cy + oy, r * 2.5);
-        grad.addColorStop(0, `rgba(${color.r}, ${color.g}, ${color.b}, ${0.15 * alphaMult})`);
+        const grad = this.ctx.createRadialGradient(cx + ox, cy + oy, 0, cx + ox, cy + oy, radius);
+        grad.addColorStop(0, `rgba(${color.r}, ${color.g}, ${color.b}, ${0.12 * alphaMult})`);
         grad.addColorStop(1, 'rgba(0,0,0,0)');
 
         this.ctx.fillStyle = grad;
-        this.ctx.beginPath();
-        this.ctx.arc(cx + ox, cy + oy, r * 2.5, 0, Math.PI * 2);
-        this.ctx.fill();
+        this.ctx.fillRect(0, 0, w, h);
     }
 }

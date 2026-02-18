@@ -1,22 +1,15 @@
-import { TimerState, Settings } from '../types';
-import { ZenVisualizer } from './ZenVisualizer';
+import { TimerState } from '../types';
 
 export class TimerDisplay {
-  private visualizer: ZenVisualizer | null = null;
-
   constructor(private container: HTMLElement) { }
 
-  render(state: TimerState, settings: Settings, onStart: () => void, onPause: () => void, onSkip: () => void, onViewClick: () => void) {
+  render(state: TimerState, onStart: () => void, onPause: () => void, onSkip: () => void, onViewClick: () => void) {
     const minutes = Math.floor(state.remainingSeconds / 60).toString().padStart(2, '0');
     const seconds = (state.remainingSeconds % 60).toString().padStart(2, '0');
 
     if (!this.container.querySelector('.timer-container')) {
-      // ... same innerHTML ...
       this.container.innerHTML = `
         <div class="timer-container" style="position:relative; width:300px; height:300px; cursor: pointer;">
-          <canvas id="zen-visualizer" width="300" height="300"
-                  style="position:absolute; top:0; left:0; z-index:0; border-radius:50%; pointer-events:none;"></canvas>
-
           <div style="position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
             <div class="timer-time" id="time-display">${minutes}:${seconds}</div>
 
@@ -31,12 +24,6 @@ export class TimerDisplay {
           </div>
         </div>
       `;
-
-      const canvas = this.container.querySelector('canvas');
-      if (canvas) {
-        this.visualizer = new ZenVisualizer(canvas);
-        this.visualizer.start();
-      }
 
       this.container.querySelector('.timer-container')?.addEventListener('click', (e) => {
         const target = e.target as HTMLElement;
@@ -61,8 +48,6 @@ export class TimerDisplay {
     this.bindButton('#main-action-btn', state.isRunning ? 'Pause' : 'Start Focus',
       (e) => { e.stopPropagation(); state.isRunning ? onPause() : onStart(); });
     this.bindButton('#skip-btn', undefined, (e) => { e.stopPropagation(); onSkip(); });
-
-    if (this.visualizer) this.visualizer.updateState(state, settings);
   }
 
   private getStatusText(state: TimerState): string {

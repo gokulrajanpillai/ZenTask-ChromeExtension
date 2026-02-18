@@ -77,6 +77,16 @@ body {
 }
 
 /* ── Layout ───────────────────────────────────────────────────── */
+.zen-bg-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+}
+
 .zen-layout {
     display: grid;
     grid-template-rows: 72px 1fr 44px;
@@ -84,43 +94,84 @@ body {
     width: 100vw;
     padding: 0 28px;
     position: relative;
+    z-index: 1;
 }
 
 /* ═══ HEADER ═══════════════════════════════════════════════════ */
 .zen-header {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
     padding: 0 4px;
+    width: 100%;
+}
+
+.header-center {
+    display: flex;
+    justify-content: center;
+}
+
+.header-right {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
 }
 
 .zen-header .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: 2.4rem;
-    letter-spacing: 0.08em;
-    color: var(--accent);
+    font-size: 2.2rem;
+    letter-spacing: 0.1em;
+    transition: var(--transition);
 }
 
-.zen-header .status-text {
-    font-size: 1.1rem;
-    color: var(--text-secondary);
+.logo-icon {
+    font-size: 2.6rem;
+}
+
+/* Theme-specific Colors */
+.zen-header.theme-forest .logo {
+    color: #5ebe78;
+}
+
+.zen-header.theme-rain .logo {
+    color: #5eaaef;
+}
+
+.zen-header.theme-summer .logo {
+    color: #efbe5e;
+}
+
+.zen-header.theme-space .logo {
+    color: #a078ef;
 }
 
 .icon-btn {
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border-radius: 12px;
     color: var(--text-secondary);
-    padding: 8px 14px;
-    border-radius: 8px;
     transition: var(--transition);
 }
 
 .icon-btn:hover {
-    background: var(--surface-2);
+    background: var(--surface-glow);
     color: var(--text);
+    transform: translateY(-2px);
+}
+
+.zen-icon {
+    width: 28px;
+    height: 28px;
+    fill: currentColor;
 }
 
 /* ═══ MAIN ZONE — LIST MODE ═══════════════════════════════════ */
@@ -657,11 +708,11 @@ body {
     backdrop-filter: blur(20px);
     border-left: 1px solid var(--border-focus);
     box-shadow: -4px 0 40px rgba(0, 0, 0, 0.5);
+    transition: right 0.35s cubic-bezier(.4, 0, .2, 1);
+    overflow-y: auto;
     z-index: 1001;
     display: flex;
     flex-direction: column;
-    transition: right 0.35s cubic-bezier(.4, 0, .2, 1);
-    overflow-y: auto;
 }
 
 .settings-panel.open {

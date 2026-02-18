@@ -14,6 +14,7 @@ const soundManager = new SoundManager();
 if (app) {
     app.innerHTML = `
       <div class="zen-layout">
+        <canvas id="zen-background" class="zen-bg-canvas"></canvas>
         <header id="header-zone"></header>
         <main id="main-zone">
             <div id="timer-section"></div>
@@ -23,6 +24,17 @@ if (app) {
         <footer id="footer-zone"></footer>
       </div>
     `;
+
+    const bgCanvas = document.getElementById('zen-background') as HTMLCanvasElement;
+    const globalVisualizer = new ZenVisualizer(bgCanvas);
+    globalVisualizer.start();
+
+    // Handle resizing
+    window.addEventListener('resize', () => {
+        bgCanvas.width = window.innerWidth;
+        bgCanvas.height = window.innerHeight;
+    });
+    window.dispatchEvent(new Event('resize'));
 
     const header = new Header(document.getElementById('header-zone')!);
     const timerComponent = new TimerDisplay(document.getElementById('timer-section')!);
@@ -36,7 +48,6 @@ if (app) {
     let currentSettings: Settings | null = null;
     let viewMode: 'list' | 'focus' = 'list';
     let previousMode: TimerMode | null = null;
-    let focusVisualizer: ZenVisualizer | null = null;
 
     // ── Toast system ──────────────────────────────────────────────
     const showToast = (text: string, durationMs = 2500) => {
@@ -67,10 +78,7 @@ if (app) {
         if (!timerState || !currentSettings) return;
 
         // Header
-        const statusText = timerState.isRunning
-            ? (timerState.mode === 'focus' ? 'Focusing...' : 'Resting...')
-            : 'ZenTask';
-        header.render(statusText, currentSettings.musicEnabled, toggleSound, openSettings);
+        header.render(currentSettings, toggleSound, openSettings);
 
         // Footer
         footer.render(timerState.mode !== 'focus' && timerState.isRunning);
@@ -81,6 +89,7 @@ if (app) {
             renderListView();
         }
 
+        globalVisualizer.updateState(timerState, currentSettings);
         syncAmbience(timerState);
     };
 
@@ -94,7 +103,6 @@ if (app) {
 
         timerComponent.render(
             timerState,
-            currentSettings!,
             () => {
                 chrome.runtime.sendMessage({ type: 'START_TIMER', payload: { taskId: getActiveTaskId() } }).then(() => {
                     viewMode = 'focus';
@@ -175,7 +183,6 @@ if (app) {
                   <circle class="progress-ring__fill" id="fv-ring" cx="160" cy="160" r="${radius}"
                           stroke-dasharray="${circumference}" stroke-dashoffset="${dashOffset}" />
                 </svg>
-                <canvas id="focus-visualizer" width="320" height="320"></canvas>
                 <div class="focus-time" id="fv-time">${minutes}:${seconds}</div>
               </div>
               <div class="focus-state-label" id="fv-state">${stateLabel}</div>
@@ -186,8 +193,7 @@ if (app) {
 
             const canvas = focusViewEl.querySelector('#focus-visualizer') as HTMLCanvasElement;
             if (canvas) {
-                focusVisualizer = new ZenVisualizer(canvas);
-                focusVisualizer.start();
+                // Removed local focus visualizer initialization
             }
         } else {
             // Update text only
@@ -203,8 +209,6 @@ if (app) {
             const ring = focusViewEl.querySelector('#fv-ring') as SVGCircleElement;
             if (ring) ring.setAttribute('stroke-dashoffset', String(dashOffset));
         }
-
-        if (focusVisualizer) focusVisualizer.updateState(timerState, currentSettings);
 
         // Render controls
         const controlsEl = focusViewEl.querySelector('#fv-controls')!;
@@ -259,8 +263,6 @@ if (app) {
     const exitFocusView = () => {
         viewMode = 'list';
         previousMode = null;
-        // Kill focus visualizer
-        if (focusVisualizer) { focusVisualizer.stop(); focusVisualizer = null; }
         focusViewEl.innerHTML = '';
         refresh();
     };
@@ -422,8 +424,11 @@ if (app) {
 
     // ── Mouse Tracking for Visualizer ───────────────────────────────
     window.addEventListener('mousemove', (e) => {
-        if (focusVisualizer) {
-            focusVisualizer.updateMouse(e.clientX, e.clientY);
-        }
+        globalVisualizer.updateMouse(e.clientX, e.clientY);
     });
+
+    // ── Audio Unlock (Satisfy Autoplay Policies) ───────────────────
+    window.addEventListener('click', () => {
+        soundManager.resume();
+    }, { once: true });
 }
