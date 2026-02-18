@@ -45,7 +45,7 @@ jobs:
         run: |
           # Simple sed to replace version in manifest.json before build
           # Assumes "version": "..." is present
-          sed -i '' 's/"version": ".*"/"version": "${{ steps.date.outputs.version }}"/' public/manifest.json
+          sed -i 's/"version": ".*"/"version": "${{ steps.date.outputs.version }}"/' public/manifest.json
           cat public/manifest.json | grep version
 
       - name: Build Extension
