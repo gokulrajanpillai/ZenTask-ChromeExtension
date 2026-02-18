@@ -4,7 +4,15 @@ export interface Task {
     isCompleted: boolean;
     estimatedMinutes: number; // Default 25
     createdAt: number;
+    updatedAt?: number;
     order: number;
+
+    // New fields for timing
+    totalTimeMs: number;
+    sessionTimeMs: number; // Time in current session
+    pomodorosCompleted: number;
+    lastStartedAt?: number;
+    lastStoppedAt?: number;
 }
 
 export type TimerMode = 'focus' | 'break' | 'longBreak';
@@ -14,15 +22,35 @@ export interface TimerState {
     mode: TimerMode;
     remainingSeconds: number;
     activeTaskId: string | null;
-    lastTick: number; // Timestamp for sync correction
-    cyclesCompleted: number; // To track 4 cycles -> long break
+    lastTick: number;
+    cyclesCompleted: number;
 }
 
+export type AppTheme = 'forest' | 'rain' | 'summer' | 'space';
+
 export interface Settings {
-    focusDuration: number; // default 20 (user requested 20, though typical pomodoro is 25)
-    breakDuration: number; // default 5
-    longBreakDuration: number; // default 15
-    enableSound: boolean;
+    // Timer
+    focusDuration: number;
+    breakDuration: number;
+    longBreakDuration: number;
+    cyclesBeforeLongBreak: number;
+
+    // Theme & Interactivity
+    theme: AppTheme;
+    backgroundInteractions: boolean; // For Section B
+    backgroundTransitions: boolean;  // For Section C
+
+    // Audio
+    musicEnabled: boolean;
+    musicVolume: number;
+    showTransitionChime: boolean;
+
+    // Visuals & Misc
     enableBreakReminders: boolean;
     backgroundIntensity: number;
+    reduceMotion: boolean;
+
+    // UX
+    autoReturnToListOnBreak: boolean;
 }
+

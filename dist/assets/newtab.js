@@ -1,68 +1,107 @@
 const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/SettingsModal.js","assets/storage.js"])))=>i.map(i=>d[i]);
-import"./main.js";import{S as v}from"./storage.js";const S="modulepreload",E=function(h){return"/"+h},y={},w=function(e,c,l){let n=Promise.resolve();if(c&&c.length>0){let p=function(d){return Promise.all(d.map(a=>Promise.resolve(a).then(u=>({status:"fulfilled",value:u}),u=>({status:"rejected",reason:u}))))};document.getElementsByTagName("link");const s=document.querySelector("meta[property=csp-nonce]"),r=s?.nonce||s?.getAttribute("nonce");n=p(c.map(d=>{if(d=E(d),d in y)return;y[d]=!0;const a=d.endsWith(".css"),u=a?'[rel="stylesheet"]':"";if(document.querySelector(`link[href="${d}"]${u}`))return;const m=document.createElement("link");if(m.rel=a?"stylesheet":S,a||(m.as="script"),m.crossOrigin="",m.href=d,r&&m.setAttribute("nonce",r),document.head.appendChild(m),a)return new Promise((k,g)=>{m.addEventListener("load",k),m.addEventListener("error",()=>g(new Error(`Unable to preload CSS for ${d}`)))})}))}function i(s){const r=new Event("vite:preloadError",{cancelable:!0});if(r.payload=s,window.dispatchEvent(r),!r.defaultPrevented)throw s}return n.then(s=>{for(const r of s||[])r.status==="rejected"&&i(r.reason);return e().catch(i)})};class M{constructor(e){this.container=e}render(e,c,l){this.container.innerHTML=`
-      <div class="zen-header">
-        <div class="left">
-          <div class="zen-logo"></div>
+var ie=Object.defineProperty;var ae=(v,e,s)=>e in v?ie(v,e,{enumerable:!0,configurable:!0,writable:!0,value:s}):v[e]=s;var p=(v,e,s)=>ae(v,typeof e!="symbol"?e+"":e,s);import"./main.js";import{S as T}from"./storage.js";const oe="modulepreload",re=function(v){return"/"+v},J={},ce=function(e,s,o){let r=Promise.resolve();if(s&&s.length>0){document.getElementsByTagName("link");const i=document.querySelector("meta[property=csp-nonce]"),n=(i==null?void 0:i.nonce)||(i==null?void 0:i.getAttribute("nonce"));r=Promise.allSettled(s.map(c=>{if(c=re(c),c in J)return;J[c]=!0;const t=c.endsWith(".css"),d=t?'[rel="stylesheet"]':"";if(document.querySelector(`link[href="${c}"]${d}`))return;const u=document.createElement("link");if(u.rel=t?"stylesheet":oe,t||(u.as="script"),u.crossOrigin="",u.href=c,n&&u.setAttribute("nonce",n),document.head.appendChild(u),t)return new Promise((g,f)=>{u.addEventListener("load",g),u.addEventListener("error",()=>f(new Error(`Unable to preload CSS for ${c}`)))})}))}function m(i){const n=new Event("vite:preloadError",{cancelable:!0});if(n.payload=i,window.dispatchEvent(n),!n.defaultPrevented)throw i}return r.then(i=>{for(const n of i||[])n.status==="rejected"&&m(n.reason);return e().catch(m)})};class de{constructor(e){p(this,"lastTheme","");p(this,"lastMusicEnabled",null);this.container=e}render(e,s,o){var m,i;if(this.lastTheme===e.theme&&this.lastMusicEnabled===e.musicEnabled)return;this.lastTheme=e.theme,this.lastMusicEnabled=e.musicEnabled;const r=`theme-${e.theme}`;this.container.innerHTML=`
+      <div class="zen-header ${r}">
+        <div class="header-left"></div>
+        <div class="header-center">
+          <span class="logo">
+            <span class="logo-icon">☯</span>
+            <span class="logo-text">ZenTask</span>
+          </span>
         </div>
-        <div class="center">
-          <span class="status-text">${e}</span>
-        </div>
-        <div class="right">
-          <button id="sound-toggle" class="icon-btn">Sound</button>
-          <button id="settings-btn" class="icon-btn">Settings</button>
-        </div>
-      </div>
-    `,this.container.querySelector("#sound-toggle")?.addEventListener("click",c),this.container.querySelector("#settings-btn")?.addEventListener("click",l)}}class L{constructor(e){this.container=e}render(e,c,l,n){const i=Math.floor(e.remainingSeconds/60).toString().padStart(2,"0"),s=(e.remainingSeconds%60).toString().padStart(2,"0");this.container.innerHTML=`
-      <div class="timer-container mode-${e.mode}">
-        <div class="timer-ring">
-           <!-- SVG Ring would go here -->
-           <div class="timer-time">${i}:${s}</div>
-        </div>
-        <div class="timer-controls">
-          ${e.isRunning?'<button id="pause-btn" class="secondary-btn">Pause</button>':'<button id="start-btn" class="primary-btn">Start Focus</button>'}
-          <button id="skip-btn" class="text-btn">Skip</button>
-        </div>
-        <div class="timer-cycle">
-           ${e.mode==="focus"?"Focus Cycle":"Rest & Restore"}
+        <div class="header-right">
+          <button id="sound-toggle" class="icon-btn" title="${e.musicEnabled?"Mute":"Unmute"}">
+            <svg class="zen-icon" viewBox="0 0 24 24">
+              ${e.musicEnabled?'<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>':'<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>'}
+            </svg>
+          </button>
+          <button id="settings-btn" class="icon-btn" title="Settings">
+            <svg class="zen-icon" viewBox="0 0 24 24">
+              <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+            </svg>
+          </button>
         </div>
       </div>
-    `,this.container.querySelector("#start-btn")?.addEventListener("click",c),this.container.querySelector("#pause-btn")?.addEventListener("click",l),this.container.querySelector("#skip-btn")?.addEventListener("click",n)}}class ${constructor(e){this.container=e}render(e,c,l,n,i,s){this.container.innerHTML=`
-      <div class="task-list-panel">
-        <h2 class="task-title">Today's Path</h2>
-        
-        <div class="add-task-row">
-            <input type="text" id="new-task-input" placeholder="Add a calm next step..." />
-            <button id="add-task-btn">+</button>
-        </div>
+    `,(m=this.container.querySelector("#sound-toggle"))==null||m.addEventListener("click",s),(i=this.container.querySelector("#settings-btn"))==null||i.addEventListener("click",o)}}class le{constructor(e){this.container=e}render(e,s,o,r,m){var c;const i=Math.floor(e.remainingSeconds/60).toString().padStart(2,"0"),n=(e.remainingSeconds%60).toString().padStart(2,"0");if(!this.container.querySelector(".timer-container"))this.container.innerHTML=`
+        <div class="timer-container" style="position:relative; width:300px; height:300px; cursor: pointer;">
+          <div style="position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
+            <div class="timer-time" id="time-display">${i}:${n}</div>
 
-        <div class="tasks-container">
-          ${e.length===0?'<div class="empty-state">Breathe. The path is clear.</div>':""}
-          ${e.map(a=>this.renderTaskRow(a,c)).join("")}
-        </div>
-      </div>
-    `;const r=this.container.querySelector("#new-task-input"),p=this.container.querySelector("#add-task-btn"),d=()=>{r.value.trim()&&(l(r.value.trim()),r.value="")};p?.addEventListener("click",d),r?.addEventListener("keypress",a=>{a.key==="Enter"&&d()}),this.container.querySelectorAll(".task-checkbox").forEach(a=>{a.addEventListener("click",u=>n(u.target.dataset.id))}),this.container.querySelectorAll(".start-task-btn").forEach(a=>{a.addEventListener("click",u=>i(u.target.dataset.id))}),this.container.querySelectorAll(".delete-task-btn").forEach(a=>{a.addEventListener("click",u=>s(u.target.dataset.id))})}renderTaskRow(e,c){const l=e.id===c,n=e.isCompleted;return`
-        <div class="task-row ${l?"active":""} ${n?"done":""}" data-id="${e.id}">
-            <div class="task-checkbox ${n?"checked":""}" data-id="${e.id}"></div>
-            <div class="task-content">
-                <span class="task-name">${e.title}</span>
-                <span class="task-estimate">${e.estimatedMinutes}m</span>
+            <div class="timer-controls">
+              <button id="main-action-btn" class="btn-primary ${e.isRunning?"btn-pause":""}">
+                ${e.isRunning?"Pause":"Start Focus"}
+              </button>
+              <button id="skip-btn" class="btn-secondary" style="padding:10px 14px;">⏭</button>
             </div>
-            ${!n&&!l?`<button class="start-task-btn" data-id="${e.id}">Focus</button>`:""}
-            ${l?'<span class="active-indicator">Running</span>':""}
-            <button class="delete-task-btn" data-id="${e.id}">×</button>
+
+            <div class="status-indicator" id="status-text">${this.getStatusText(e)}</div>
+          </div>
         </div>
-      `}}class I{constructor(e){this.container=e}render(e){if(!e){this.container.innerHTML="";return}const c=["Stretch your neck and shoulders","Close your eyes for 20 seconds","Drink some water","Take a deep breath"],l=c[Math.floor(Math.random()*c.length)];this.container.innerHTML=`
+      `,(c=this.container.querySelector(".timer-container"))==null||c.addEventListener("click",t=>{t.target.tagName.toLowerCase()!=="button"&&m()});else{const t=this.container.querySelector("#time-display");t&&(t.textContent=`${i}:${n}`,t.classList.remove("focus-glow","break-glow"),e.isRunning&&e.mode==="focus"?t.classList.add("focus-glow"):e.isRunning&&t.classList.add("break-glow"));const d=this.container.querySelector("#status-text");d&&(d.textContent=this.getStatusText(e))}this.bindButton("#main-action-btn",e.isRunning?"Pause":"Start Focus",t=>{t.stopPropagation(),e.isRunning?o():s()}),this.bindButton("#skip-btn",void 0,t=>{t.stopPropagation(),r()})}getStatusText(e){return e.mode==="focus"?`Focus · Cycle ${e.cyclesCompleted+1}`:e.mode==="break"?"Short Break":e.mode==="longBreak"?"Long Rest":"Ready"}bindButton(e,s,o){var i;const r=this.container.querySelector(e);if(!r)return;s!==void 0&&(r.textContent=s);const m=r.cloneNode(!0);(i=r.parentNode)==null||i.replaceChild(m,r),m.addEventListener("click",o)}}class Q{constructor(e){this.container=e}render(e,s,o,r,m,i){const n=[...e].sort((t,d)=>t.id===s?-1:d.id===s?1:(t.order||0)-(d.order||0)),c=this.container.querySelector(".task-list-panel");if(c){const t=c.querySelector(".header-count");t&&(t.textContent=`${e.filter(u=>u.isCompleted).length}/${e.length}`);const d=c.querySelector(".task-list");d&&(d.innerHTML=n.length===0?'<div class="empty-state">Focus on one thing at a time.</div>':n.map(u=>this.renderTaskRow(u,s)).join(""))}else{this.container.innerHTML=`
+                <div class="task-list-panel">
+                    <div class="tasks-header">
+                        <span class="header-title">Today's Cycle</span>
+                        <span class="header-count" style="font-size:0.8em;opacity:0.7">${e.filter(g=>g.isCompleted).length}/${e.length}</span>
+                    </div>
+
+                    <div class="task-list">
+                        ${n.length===0?'<div class="empty-state">Focus on one thing at a time.</div>':n.map(g=>this.renderTaskRow(g,s)).join("")}
+                    </div>
+                    
+                    <div class="task-input-container">
+                        <input type="text" id="new-task-input" class="task-input" placeholder="What is your next focus?" />
+                        <button id="add-task-btn" class="btn-secondary" style="padding:10px 16px;">+</button>
+                    </div>
+                </div>
+            `;const t=this.container.querySelector("#new-task-input"),d=this.container.querySelector("#add-task-btn"),u=()=>{t.value.trim()&&(o(t.value.trim()),t.value="")};d==null||d.addEventListener("click",u),t==null||t.addEventListener("keypress",g=>{g.key==="Enter"&&u()})}this.container.querySelectorAll(".task-item").forEach(t=>{var u,g;const d=t.dataset.id;(u=t.querySelector(".task-checkbox"))==null||u.addEventListener("click",f=>{f.stopPropagation(),r(d)}),(g=t.querySelector(".delete-task-btn"))==null||g.addEventListener("click",f=>{f.stopPropagation(),i(d)}),t.addEventListener("click",()=>{!t.classList.contains("completed")&&d!==s&&m(d)})})}renderTaskRow(e,s){const o=e.id===s,r=e.isCompleted,m=Math.floor((e.totalTimeMs||0)/6e4),i=m>0?`${Math.floor(m/60)}h ${m%60}m`:"";return`
+        <div class="task-item ${o?"active":""} ${r?"completed":""}" data-id="${e.id}">
+            <div class="task-checkbox">
+                ${r?"✓":""}
+            </div>
+            <div class="task-content">
+                <span class="task-title">${e.title}</span>
+                <div class="task-meta">
+                    ${o?'<span class="active-badge">◉ In Focus</span>':""}
+                    ${e.pomodorosCompleted>0?`<span>${e.pomodorosCompleted} 🍅</span>`:""}
+                    ${i?`<span>${i}</span>`:""}
+                </div>
+            </div>
+            <button class="delete-task-btn">×</button>
+        </div>
+      `}}class ue{constructor(e){p(this,"currentReminder","");p(this,"lastChangeTime",0);this.container=e}render(e){if(!e){this.container.innerHTML="",this.currentReminder="";return}const s=Date.now();if(this.currentReminder&&s-this.lastChangeTime<2500)return;const o=["Stretch your neck and shoulders","Close your eyes for 20 seconds","Drink some water","Take a deep breath"];let r=o[Math.floor(Math.random()*o.length)];r===this.currentReminder&&o.length>1&&(r=o[(o.indexOf(r)+1)%o.length]),this.currentReminder=r,this.lastChangeTime=s,this.container.innerHTML=`
       <div class="zen-footer-reminder fade-in">
         <span class="reminder-icon">🍃</span>
-        <span class="reminder-text">${l}</span>
+        <span class="reminder-text">${r}</span>
       </div>
-    `}}const f=document.getElementById("app");if(f){f.innerHTML=`
+    `}}class he{constructor(){p(this,"ctx",null);p(this,"masterGain",null);p(this,"chimeGain",null);p(this,"tracks",[]);p(this,"activeTrackIndex",0);p(this,"currentAmbienceId","none");p(this,"settings",null);p(this,"CROSSFADE_TIME",1.2);p(this,"REMOTE_FALLBACKS",{forest_focus:"https://www.soundboard.com/handler/DownLoadTrack.ashx?cliptitle=Forest+Ambience&filename=24/246473-cb378298-2921-4f6c-8438-e67c870c52bb.mp3",forest_break:"https://www.soundboard.com/handler/DownLoadTrack.ashx?cliptitle=Wind+in+trees&filename=24/246473-7e4e1f74-32b4-4b5a-9407-3a1b0c0343a4.mp3",rain_focus:"https://www.soundboard.com/handler/DownLoadTrack.ashx?cliptitle=Heavy+Rain&filename=24/246473-61fc0f8d-c782-4c2e-9d8a-9e1e3b6e8a8b.mp3",rain_break:"https://www.soundboard.com/handler/DownLoadTrack.ashx?cliptitle=Soft+Rain&filename=24/246473-b3c1d4e5-f6a7-4b8c-9e0a-1d2e3f4a5b6c.mp3",summer_focus:"https://www.soundboard.com/handler/DownLoadTrack.ashx?cliptitle=Cicadas&filename=24/246473-d5e6f7a8-b9c0-4d1e-8f2a-3b4c5d6e7f8a.mp3",summer_break:"https://www.soundboard.com/handler/DownLoadTrack.ashx?cliptitle=Birds+Singing&filename=24/246473-1a2b3c4d-5e6f-4a8c-9e0d-1f2e3a4b5c6d.mp3",space_focus:"https://www.soundboard.com/handler/DownLoadTrack.ashx?cliptitle=Deep+Space&filename=24/246473-8a9b0c1d-2e3f-4a5b-6c7d-8e9f0a1b2c3d.mp3",space_break:"https://assets.mixkit.co/sfx/preview/mixkit-meditation-bowl-single-hit-2090.mp3"})}async init(){if(!this.ctx){this.ctx=new AudioContext,this.masterGain=this.ctx.createGain(),this.masterGain.connect(this.ctx.destination),this.chimeGain=this.ctx.createGain(),this.chimeGain.connect(this.masterGain);for(let e=0;e<2;e++){const s=new Audio;s.loop=!0,s.crossOrigin="anonymous";const o=this.ctx.createMediaElementSource(s),r=this.ctx.createGain();r.gain.setValueAtTime(0,this.ctx.currentTime),o.connect(r),r.connect(this.masterGain),this.tracks.push({element:s,source:o,gain:r})}}}async resume(){this.ctx&&this.ctx.state==="suspended"&&await this.ctx.resume()}async updateSettings(e){if(this.ctx||await this.init(),!this.ctx||!this.masterGain)return;this.settings=e,this.ctx.state==="suspended"&&await this.ctx.resume();const s=e.musicEnabled?e.musicVolume/100:0;this.masterGain.gain.setTargetAtTime(s,this.ctx.currentTime,.1)}async playCue(e){var m;if(!((m=this.settings)!=null&&m.showTransitionChime)||((!this.ctx||!this.chimeGain)&&await this.init(),!this.ctx||!this.chimeGain))return;const s=this.ctx.currentTime,o=this.ctx.createOscillator(),r=this.ctx.createGain();o.type="sine",o.frequency.setValueAtTime(440,s),o.frequency.exponentialRampToValueAtTime(880,s+.1),r.gain.setValueAtTime(0,s),r.gain.linearRampToValueAtTime(.3,s+.05),r.gain.exponentialRampToValueAtTime(.01,s+.5),o.connect(r),r.connect(this.chimeGain),o.start(s),o.stop(s+.5)}async playThemeAmbience(e,s){if(this.ctx||await this.init(),!this.ctx)return;const o=`${e}_${s}`;if(this.currentAmbienceId===o)return;const r=`${e}_${s==="focus"?"focus":"break"}.mp3`,m=chrome.runtime.getURL(`src/assets/audio/${r}`),i=this.REMOTE_FALLBACKS[o],n=(this.activeTrackIndex+1)%2,c=this.tracks[this.activeTrackIndex],t=this.tracks[n],d=this.ctx.currentTime,u=g=>new Promise((f,l)=>{t.element.src=g,t.element.oncanplaythrough=async()=>{t.element.oncanplaythrough=null,c.gain.gain.cancelScheduledValues(d),c.gain.gain.exponentialRampToValueAtTime(.001,d+this.CROSSFADE_TIME),setTimeout(()=>c.element.pause(),this.CROSSFADE_TIME*1e3),t.gain.gain.cancelScheduledValues(d),t.gain.gain.setValueAtTime(.001,d),t.gain.gain.exponentialRampToValueAtTime(1,d+this.CROSSFADE_TIME);try{await t.element.play(),f()}catch(k){l(k)}},t.element.onerror=k=>l(k),t.element.load()});try{await u(m)}catch{console.log(`Local asset ${r} missing or blocked, trying remote...`);try{i&&await u(i)}catch{console.warn(`All attempts failed for ${o}`)}}this.activeTrackIndex=n,this.currentAmbienceId=o}async stopAmbience(){if(!this.ctx)return;const e=this.ctx.currentTime;this.tracks.forEach(s=>{s.gain.gain.cancelScheduledValues(e),s.gain.gain.exponentialRampToValueAtTime(.001,e+1),setTimeout(()=>s.element.pause(),1e3)}),this.currentAmbienceId="none"}}class me{constructor(e){p(this,"ctx");p(this,"animationId",0);p(this,"state",null);p(this,"settings",null);p(this,"theme","forest");p(this,"phase",0);p(this,"currentSpeedMult",1);p(this,"currentAlphaMult",1);p(this,"TRANSITION_LERP",.05);p(this,"particles",[]);p(this,"ripples",[]);p(this,"mouse",{x:0,y:0,active:!1});p(this,"prefersReducedMotion",!1);p(this,"animate",()=>{this.render(),this.animationId=requestAnimationFrame(this.animate)});this.canvas=e,this.ctx=e.getContext("2d"),this.prefersReducedMotion=window.matchMedia("(prefers-reduced-motion: reduce)").matches,this.initParticles()}start(){this.animate()}stop(){cancelAnimationFrame(this.animationId)}updateState(e,s){this.state=e,this.settings=s,this.theme!==s.theme&&(this.theme=s.theme,this.initParticles())}updateMouse(e,s){var o;this.prefersReducedMotion||!((o=this.settings)!=null&&o.backgroundInteractions)||(this.mouse.x=e,this.mouse.y=s,this.mouse.active=!0,this.theme==="rain"&&Math.random()>.8&&this.ripples.push({x:e,y:s,r:0,life:1}))}initParticles(){this.particles=[];const e=this.theme==="space"?120:60,s=this.canvas.width,o=this.canvas.height;for(let r=0;r<e;r++)this.particles.push({x:Math.random()*s,y:Math.random()*o,r:Math.random()*2.5+.5,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,baseDist:Math.random()*200+100,angle:Math.random()*Math.PI*2,opacity:Math.random()*.4+.1})}render(){var u,g,f;if(!this.canvas)return;const e=this.canvas.width,s=this.canvas.height,o=e/2,r=s/2;this.ctx.clearRect(0,0,e,s);const i={forest:{r:90,g:180,b:110},rain:{r:100,g:170,b:230},summer:{r:240,g:190,b:100},space:{r:150,g:100,b:240}}[this.theme];let n=1,c=1;(u=this.state)!=null&&u.isRunning&&(n=this.state.mode==="focus"?1.4:.7,c=this.state.mode==="focus"?1.3:.6),(g=this.settings)!=null&&g.backgroundTransitions?(this.currentSpeedMult+=(n-this.currentSpeedMult)*this.TRANSITION_LERP,this.currentAlphaMult+=(c-this.currentAlphaMult)*this.TRANSITION_LERP):(this.currentSpeedMult=n,this.currentAlphaMult=c);const t=.012*this.currentSpeedMult;this.prefersReducedMotion||(this.phase+=t),this.drawCore(e,s,i,this.currentAlphaMult),this.theme==="rain"&&(this.ripples=this.ripples.filter(l=>l.life>0),this.ripples.forEach(l=>{l.r+=3,l.life-=.015,this.ctx.strokeStyle=`rgba(${i.r}, ${i.g}, ${i.b}, ${l.life*.3})`,this.ctx.lineWidth=1.5,this.ctx.beginPath(),this.ctx.arc(l.x,l.y,l.r,0,Math.PI*2),this.ctx.stroke()}));const d=((f=this.settings)==null?void 0:f.backgroundInteractions)&&!this.prefersReducedMotion;this.particles.forEach(l=>{l.x+=l.vx*this.currentSpeedMult,l.y+=l.vy*this.currentSpeedMult,l.x<0&&(l.x=e),l.x>e&&(l.x=0),l.y<0&&(l.y=s),l.y>s&&(l.y=0);let k=l.x,R=l.y;if(d){const $=this.mouse.x-l.x,C=this.mouse.y-l.y,x=Math.sqrt($*$+C*C);if(this.theme==="space"){if(x<200){const I=(200-x)*.04;k-=$/x*I,R-=C/x*I}}else this.theme==="forest"||this.theme==="rain"?(k+=(this.mouse.x-o)*.01*l.r,R+=(this.mouse.y-r)*.01*l.r):this.theme==="summer"&&x<150&&(l.vx+=(Math.random()-.5)*.05,l.vy-=.03)}const A=(l.opacity||.5)*this.currentAlphaMult;this.ctx.fillStyle=`rgba(${i.r}, ${i.g}, ${i.b}, ${A})`,this.ctx.beginPath(),this.ctx.arc(k,R,l.r,0,Math.PI*2),this.ctx.fill()})}drawCore(e,s,o,r){const m=e/2,i=s/2,n=Math.max(e,s)*.8,c=this.mouse.active?(this.mouse.x-m)*.03:0,t=this.mouse.active?(this.mouse.y-i)*.03:0,d=this.ctx.createRadialGradient(m+c,i+t,0,m+c,i+t,n);d.addColorStop(0,`rgba(${o.r}, ${o.g}, ${o.b}, ${.12*r})`),d.addColorStop(1,"rgba(0,0,0,0)"),this.ctx.fillStyle=d,this.ctx.fillRect(0,0,e,s)}}const ee=document.getElementById("app"),E=new he;if(ee){ee.innerHTML=`
       <div class="zen-layout">
+        <canvas id="zen-background" class="zen-bg-canvas"></canvas>
         <header id="header-zone"></header>
-        <main id="main-zone"></main>
+        <main id="main-zone">
+            <div id="timer-section"></div>
+            <div id="tasks-section"></div>
+        </main>
+        <div id="focus-view"></div>
         <footer id="footer-zone"></footer>
       </div>
-    `;const h=new M(document.getElementById("header-zone"));document.getElementById("main-zone").innerHTML=`
-        <div id="timer-section"></div>
-        <div id="tasks-section"></div>
-    `;const e=new L(document.getElementById("timer-section")),c=new $(document.getElementById("tasks-section")),l=new I(document.getElementById("footer-zone"));let n=null,i=[];const s=async()=>{n=await chrome.runtime.sendMessage({type:"GET_STATE"}),i=await v.getTasks(),r()},r=()=>{if(!n)return;const t=n.isRunning?`Focusing on: ${p(n.activeTaskId)}`:n.mode==="focus"?"Ready when you are":"Break time";h.render(t,g,T),e.render(n,()=>chrome.runtime.sendMessage({type:"START_TIMER",payload:{taskId:d()}}).then(s),()=>chrome.runtime.sendMessage({type:"PAUSE_TIMER"}).then(s),()=>chrome.runtime.sendMessage({type:"SKIP_TIMER"}).then(s)),c.render(i,n.activeTaskId,o=>a(o),o=>u(o),o=>m(o),o=>k(o)),l.render(n.mode!=="focus")},p=t=>t?i.find(o=>o.id===t)?.title||"Task":"...",d=()=>n?.activeTaskId,a=async t=>{const o={id:crypto.randomUUID(),title:t,isCompleted:!1,estimatedMinutes:25,createdAt:Date.now(),order:i.length};i.push(o),await v.saveTasks(i),s()},u=async t=>{const o=i.find(b=>b.id===t);o&&(o.isCompleted=!o.isCompleted,await v.saveTasks(i),s())},m=async t=>{await chrome.runtime.sendMessage({type:"START_TIMER",payload:{taskId:t}}),s()},k=async t=>{i=i.filter(o=>o.id!==t),await v.saveTasks(i),s()},g=async()=>{const t=await v.getSettings();await v.saveSettings({...t,enableSound:!t.enableSound})},T=()=>{w(async()=>{const{SettingsModal:t}=await import("./SettingsModal.js");return{SettingsModal:t}},__vite__mapDeps([0,1])).then(({SettingsModal:t})=>{new t(()=>{s()}).render()})};s(),chrome.runtime.onMessage.addListener(t=>{t.type==="TIMER_UPDATE"&&(n=t.payload,r())})}
+    `;const v=document.getElementById("zen-background"),e=new me(v);e.start(),window.addEventListener("resize",()=>{v.width=window.innerWidth,v.height=window.innerHeight}),window.dispatchEvent(new Event("resize"));const s=new de(document.getElementById("header-zone")),o=new le(document.getElementById("timer-section")),r=new Q(document.getElementById("tasks-section")),m=new ue(document.getElementById("footer-zone")),i=document.getElementById("focus-view");let n=null,c=[],t=null,d="list",u=null;const g=(a,h=2500)=>{let y=document.querySelector(".zen-toast");y||(y=document.createElement("div"),y.className="zen-toast",document.body.appendChild(y)),y.textContent=a,y.classList.remove("show"),y.offsetWidth,y.classList.add("show"),setTimeout(()=>y.classList.remove("show"),h)},f=async()=>{n=await chrome.runtime.sendMessage({type:"GET_STATE"}),c=await T.getTasks(),t=await T.getSettings(),await E.updateSettings(t),l()},l=()=>{if(!n||!t)return;s.render(t,te,se),m.render(n.mode!=="focus"&&n.isRunning),d==="focus"?R():k();const a=document.querySelector(".zen-layout");a&&(a.classList.remove("theme-forest","theme-rain","theme-summer","theme-space"),a.classList.add(`theme-${t.theme}`)),e.updateState(n,t),F(n)},k=()=>{if(!n)return;document.getElementById("main-zone").classList.remove("hidden"),i.classList.remove("active"),o.render(n,()=>{chrome.runtime.sendMessage({type:"START_TIMER",payload:{taskId:x()}}).then(()=>{d="focus",u="focus",f(),g("✦ Focus started")})},()=>chrome.runtime.sendMessage({type:"PAUSE_TIMER"}).then(f),()=>chrome.runtime.sendMessage({type:"SKIP_TIMER"}).then(f),()=>{d="focus",u="focus",l()}),r.render(c,n.activeTaskId,h=>I(h),h=>B(h),h=>{D(h).then(()=>{d="focus",u="focus",f(),g("✦ Focus started")})},h=>V(h))},R=()=>{var O,U,N,W,Z,K;if(!n||!t)return;document.getElementById("main-zone").classList.add("hidden"),i.classList.add("active");const h=c.find(w=>w.id===n.activeTaskId),y=h?h.title:"Focus";let M="Idle";n.isRunning&&n.mode==="focus"?M=`Focus · Cycle ${n.cyclesCompleted+1}`:n.isRunning&&n.mode==="break"?M="Short Break":n.isRunning&&n.mode==="longBreak"?M="Long Rest":n.isRunning||(M="Paused");const S=Math.floor(n.remainingSeconds/60).toString().padStart(2,"0"),b=(n.remainingSeconds%60).toString().padStart(2,"0"),z=150,G=2*Math.PI*z;let _=t.focusDuration*60;n.mode==="break"?_=t.breakDuration*60:n.mode==="longBreak"&&(_=t.longBreakDuration*60);const ne=_>0?n.remainingSeconds/_:0,H=G*(1-ne);if(!i.querySelector(".focus-timer-wrap"))i.innerHTML=`
+              <div class="focus-task-title" id="fv-task-title">${y}</div>
+              <div class="focus-timer-wrap">
+                <svg class="progress-ring" width="320" height="320">
+                  <circle class="progress-ring__bg" cx="160" cy="160" r="${z}" />
+                  <circle class="progress-ring__fill" id="fv-ring" cx="160" cy="160" r="${z}"
+                          stroke-dasharray="${G}" stroke-dashoffset="${H}" />
+                </svg>
+                <div class="focus-time" id="fv-time">${S}:${b}</div>
+              </div>
+              <div class="focus-state-label" id="fv-state">${M}</div>
+              <div class="focus-controls" id="fv-controls"></div>
+              <button class="focus-exit-btn" id="fv-exit">← Exit Focus View</button>
+              <button class="focus-show-tasks-btn" id="fv-show-tasks">Show Tasks</button>
+            `,i.querySelector("#focus-visualizer");else{const w=i.querySelector("#fv-task-title");w&&(w.textContent=y);const j=i.querySelector("#fv-time");j&&(j.textContent=`${S}:${b}`);const Y=i.querySelector("#fv-state");Y&&(Y.textContent=M);const X=i.querySelector("#fv-ring");X&&X.setAttribute("stroke-dashoffset",String(H))}const L=i.querySelector("#fv-controls");L&&(n.isRunning?L.innerHTML=`
+                  <button class="btn-primary btn-pause" id="fv-pause">Pause</button>
+                  <button class="btn-secondary" id="fv-skip" style="padding:10px 14px;">⏭</button>
+                `:L.innerHTML=`
+                  <button class="btn-primary" id="fv-resume">Resume</button>
+                  <button class="btn-danger" id="fv-stop">Stop</button>
+                  <button class="btn-secondary" id="fv-skip" style="padding:10px 14px;">⏭</button>
+                `,(O=L.querySelector("#fv-pause"))==null||O.addEventListener("click",()=>{chrome.runtime.sendMessage({type:"PAUSE_TIMER"}).then(f)}),(U=L.querySelector("#fv-resume"))==null||U.addEventListener("click",()=>{chrome.runtime.sendMessage({type:"START_TIMER",payload:{taskId:x()}}).then(f)}),(N=L.querySelector("#fv-stop"))==null||N.addEventListener("click",()=>{chrome.runtime.sendMessage({type:"RESET_TIMER"}).then(()=>{A()})}),(W=L.querySelector("#fv-skip"))==null||W.addEventListener("click",()=>{chrome.runtime.sendMessage({type:"SKIP_TIMER"}).then(f)}));const q=i.querySelector("#fv-exit");if(q){const w=q.cloneNode(!0);(Z=q.parentNode)==null||Z.replaceChild(w,q),w.addEventListener("click",()=>A())}const P=i.querySelector("#fv-show-tasks");if(P){const w=P.cloneNode(!0);(K=P.parentNode)==null||K.replaceChild(w,P),w.addEventListener("click",()=>$())}},A=()=>{d="list",u=null,i.innerHTML="",f()},$=()=>{if(!n)return;const a=document.createElement("div");a.className="task-drawer-overlay";const h=document.createElement("div");h.className="task-drawer";const y=document.createElement("div");new Q(y).render(c,n.activeTaskId,b=>{I(b),S()},b=>{B(b),S()},b=>{D(b),S()},b=>{V(b),S()}),h.appendChild(y),document.body.appendChild(a),document.body.appendChild(h),requestAnimationFrame(()=>{a.classList.add("visible"),h.classList.add("open")});const S=()=>{h.classList.remove("open"),a.classList.remove("visible"),setTimeout(()=>{a.remove(),h.remove(),f()},350)};a.addEventListener("click",S)},C=a=>{if(!u||!t){u=a.mode;return}a.mode!==u&&(a.mode==="focus"&&(u==="break"||u==="longBreak")?g("✦ Back to focus"):(a.mode==="break"||a.mode==="longBreak")&&(g("🌿 Break time"),t.autoReturnToListOnBreak&&d==="focus"&&A()),u=a.mode)},x=()=>n==null?void 0:n.activeTaskId,I=async a=>{const h={id:crypto.randomUUID(),title:a,isCompleted:!1,estimatedMinutes:25,createdAt:Date.now(),order:c.length,totalTimeMs:0,sessionTimeMs:0,pomodorosCompleted:0};c.push(h),await T.saveTasks(c),f()},B=async a=>{const h=c.find(y=>y.id===a);h&&(h.isCompleted=!h.isCompleted,await T.saveTasks(c),f())},D=async a=>{n!=null&&n.isRunning&&await chrome.runtime.sendMessage({type:"PAUSE_TIMER"}),await chrome.runtime.sendMessage({type:"START_TIMER",payload:{taskId:a}})},V=async a=>{(n==null?void 0:n.activeTaskId)===a&&n.isRunning&&await chrome.runtime.sendMessage({type:"PAUSE_TIMER"}),c=c.filter(h=>h.id!==a),await T.saveTasks(c),f()},te=async()=>{t||(t=await T.getSettings());const a=!t.musicEnabled;t={...t,musicEnabled:a},await T.saveSettings(t),await E.updateSettings(t),a?n&&await F(n):await E.stopAmbience(),l()},se=()=>{ce(async()=>{const{SettingsPanel:a}=await import("./SettingsModal.js");return{SettingsPanel:a}},__vite__mapDeps([0,1])).then(({SettingsPanel:a})=>{new a(()=>f()).open()})},F=async a=>{if(t||(t=await T.getSettings()),!t.musicEnabled){await E.stopAmbience();return}a.isRunning?await E.playThemeAmbience(t.theme,a.mode):await E.stopAmbience()};f(),T.onChange(a=>{a.zen_settings&&f()}),chrome.runtime.onMessage.addListener(a=>{if(a.type==="TIMER_UPDATE"){const h=a.payload;C(h),n=h,l()}else a.type==="PLAY_CUE"&&E.playCue(a.payload)}),window.addEventListener("mousemove",a=>{e.updateMouse(a.clientX,a.clientY)}),window.addEventListener("click",()=>{E.resume()},{once:!0})}

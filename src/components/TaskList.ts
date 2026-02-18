@@ -3,50 +3,90 @@ import { Task } from '../types';
 export class TaskList {
     constructor(private container: HTMLElement) { }
 
-    render(tasks: Task[], activeTaskId: string | null, onAddTask: (title: string) => void, onToggleTask: (id: string) => void, onStartTask: (id: string) => void, onDeleteTask: (id: string) => void) {
-        this.container.innerHTML = `
-      <div class="task-list-panel">
-        <h2 class="task-title">Today's Path</h2>
-        
-        <div class="add-task-row">
-            <input type="text" id="new-task-input" placeholder="Add a calm next step..." />
-            <button id="add-task-btn">+</button>
-        </div>
+    render(
+        tasks: Task[],
+        activeTaskId: string | null,
+        onAddTask: (title: string) => void,
+        onToggleTask: (id: string) => void,
+        onStartTask: (id: string) => void,
+        onDeleteTask: (id: string) => void
+    ) {
+        const sortedTasks = [...tasks].sort((a, b) => {
+            if (a.id === activeTaskId) return -1;
+            if (b.id === activeTaskId) return 1;
+            return (a.order || 0) - (b.order || 0);
+        });
 
-        <div class="tasks-container">
-          ${tasks.length === 0 ? '<div class="empty-state">Breathe. The path is clear.</div>' : ''}
-          ${tasks.map(task => this.renderTaskRow(task, activeTaskId)).join('')}
-        </div>
-      </div>
-    `;
+        // Check if we need to full render or just updates
+        const panel = this.container.querySelector('.task-list-panel');
+        if (!panel) {
+            this.container.innerHTML = `
+                <div class="task-list-panel">
+                    <div class="tasks-header">
+                        <span class="header-title">Today's Cycle</span>
+                        <span class="header-count" style="font-size:0.8em;opacity:0.7">${tasks.filter(t => t.isCompleted).length}/${tasks.length}</span>
+                    </div>
 
-        // Event Listeners
-        const input = this.container.querySelector('#new-task-input') as HTMLInputElement;
-        const addBtn = this.container.querySelector('#add-task-btn');
+                    <div class="task-list">
+                        ${sortedTasks.length === 0
+                    ? '<div class="empty-state">Focus on one thing at a time.</div>'
+                    : sortedTasks.map(task => this.renderTaskRow(task, activeTaskId)).join('')}
+                    </div>
+                    
+                    <div class="task-input-container">
+                        <input type="text" id="new-task-input" class="task-input" placeholder="What is your next focus?" />
+                        <button id="add-task-btn" class="btn-secondary" style="padding:10px 16px;">+</button>
+                    </div>
+                </div>
+            `;
 
-        const handleAdd = () => {
-            if (input.value.trim()) {
-                onAddTask(input.value.trim());
-                input.value = '';
+            // Stable listeners for input
+            const input = this.container.querySelector('#new-task-input') as HTMLInputElement;
+            const addBtn = this.container.querySelector('#add-task-btn');
+
+            const handleAdd = () => {
+                if (input.value.trim()) {
+                    onAddTask(input.value.trim());
+                    input.value = '';
+                }
+            };
+
+            addBtn?.addEventListener('click', handleAdd);
+            input?.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleAdd();
+            });
+        } else {
+            // Update items only
+            const countEl = panel.querySelector('.header-count');
+            if (countEl) countEl.textContent = `${tasks.filter(t => t.isCompleted).length}/${tasks.length}`;
+
+            const listEl = panel.querySelector('.task-list');
+            if (listEl) {
+                listEl.innerHTML = sortedTasks.length === 0
+                    ? '<div class="empty-state">Focus on one thing at a time.</div>'
+                    : sortedTasks.map(task => this.renderTaskRow(task, activeTaskId)).join('');
             }
-        };
+        }
 
-        addBtn?.addEventListener('click', handleAdd);
-        input?.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleAdd();
-        });
+        // Re-bind listeners for dynamic items
+        this.container.querySelectorAll('.task-item').forEach(el => {
+            const id = (el as HTMLElement).dataset.id!;
 
-        // Delegation for list items
-        this.container.querySelectorAll('.task-checkbox').forEach(el => {
-            el.addEventListener('click', (e) => onToggleTask((e.target as HTMLElement).dataset.id!));
-        });
+            el.querySelector('.task-checkbox')?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                onToggleTask(id);
+            });
 
-        this.container.querySelectorAll('.start-task-btn').forEach(el => {
-            el.addEventListener('click', (e) => onStartTask((e.target as HTMLElement).dataset.id!));
-        });
+            el.querySelector('.delete-task-btn')?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                onDeleteTask(id);
+            });
 
-        this.container.querySelectorAll('.delete-task-btn').forEach(el => {
-            el.addEventListener('click', (e) => onDeleteTask((e.target as HTMLElement).dataset.id!));
+            el.addEventListener('click', () => {
+                if (!el.classList.contains('completed') && id !== activeTaskId) {
+                    onStartTask(id);
+                }
+            });
         });
     }
 
@@ -54,16 +94,23 @@ export class TaskList {
         const isActive = task.id === activeTaskId;
         const isDone = task.isCompleted;
 
+        const totalMinutes = Math.floor((task.totalTimeMs || 0) / 60000);
+        const timeDisplay = totalMinutes > 0 ? `${Math.floor(totalMinutes / 60)}h ${totalMinutes % 60}m` : '';
+
         return `
-        <div class="task-row ${isActive ? 'active' : ''} ${isDone ? 'done' : ''}" data-id="${task.id}">
-            <div class="task-checkbox ${isDone ? 'checked' : ''}" data-id="${task.id}"></div>
-            <div class="task-content">
-                <span class="task-name">${task.title}</span>
-                <span class="task-estimate">${task.estimatedMinutes}m</span>
+        <div class="task-item ${isActive ? 'active' : ''} ${isDone ? 'completed' : ''}" data-id="${task.id}">
+            <div class="task-checkbox">
+                ${isDone ? '✓' : ''}
             </div>
-            ${!isDone && !isActive ? `<button class="start-task-btn" data-id="${task.id}">Focus</button>` : ''}
-            ${isActive ? `<span class="active-indicator">Running</span>` : ''}
-            <button class="delete-task-btn" data-id="${task.id}">×</button>
+            <div class="task-content">
+                <span class="task-title">${task.title}</span>
+                <div class="task-meta">
+                    ${isActive ? '<span class="active-badge">◉ In Focus</span>' : ''}
+                    ${task.pomodorosCompleted > 0 ? `<span>${task.pomodorosCompleted} 🍅</span>` : ''}
+                    ${timeDisplay ? `<span>${timeDisplay}</span>` : ''}
+                </div>
+            </div>
+            <button class="delete-task-btn">×</button>
         </div>
       `;
     }

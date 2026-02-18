@@ -9,9 +9,9 @@ export default defineConfig({
     build: {
         rollupOptions: {
             input: {
-                newtab: resolve(__dirname, 'newtab.html'),
-                popup: resolve(__dirname, 'popup.html'),
-                background: resolve(__dirname, 'src/background/index.ts'),
+                newtab: 'newtab.html',
+                popup: 'popup.html',
+                background: 'src/background/index.ts',
             },
             output: {
                 entryFileNames: 'assets/[name].js',
