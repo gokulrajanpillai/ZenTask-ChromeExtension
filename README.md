@@ -45,5 +45,5 @@ Zen Task V2 features a **Soft Light** aesthetic prioritizing simplicity, clarity
 - **Sync**: Chrome Storage Sync (Tasks/Settings)
 - **CI/CD**: GitHub Actions (CalVer release)
 
----
+----
 *Transform your new tab into a sanctuary of focus. Reclaim your day.*
