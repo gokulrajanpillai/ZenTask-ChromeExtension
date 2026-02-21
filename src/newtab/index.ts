@@ -2,6 +2,8 @@ import '../styles/main.css';
 import { Header } from '../components/Header';
 import { TimerDisplay } from '../components/TimerDisplay';
 import { TaskList } from '../components/TaskList';
+import { QuickGrid } from '../components/QuickGrid';
+import { BackgroundEffects } from '../components/BackgroundEffects';
 import { Footer } from '../components/Footer';
 import { StorageService } from '../services/storage';
 import { SoundManager } from '../services/audio';
@@ -38,9 +40,18 @@ if (app) {
 
     const header = new Header(document.getElementById('header-zone')!);
     const timerComponent = new TimerDisplay(document.getElementById('timer-section')!);
-    const taskListComponent = new TaskList(document.getElementById('tasks-section')!);
-    const footer = new Footer(document.getElementById('footer-zone')!);
-    const focusViewEl = document.getElementById('focus-view')!;
+    const taskList = new TaskList(document.getElementById('focus-zone')!);
+    const quickGrid = new QuickGrid(document.getElementById('grid-zone')!);
+
+    // Background Effects
+    const bgCanvas = document.getElementById('background-canvas') as HTMLCanvasElement;
+    if (bgCanvas) {
+        const bgEffects = new BackgroundEffects(bgCanvas);
+        bgEffects.setTheme('scandinavian');
+        bgEffects.start();
+    }
+
+    // State focusViewEl = document.getElementById('focus-view')!;
 
     // State
     let timerState: TimerState | null = null;

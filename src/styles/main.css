@@ -562,6 +562,36 @@ body {
     animation: activeGlowIn 0.5s ease forwards;
 }
 
+.animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+/* Background Effects */
+body::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, var(--color-secondary) 0%, transparent 40%);
+    opacity: 0.1;
+    z-index: -2;
+    pointer-events: none;
+    animation: breathe 15s ease-in-out infinite alternate;
+}
+
+@keyframes breathe {
+    from {
+        transform: scale(1) translate(0, 0);
+    }
+
+    to {
+        transform: scale(1.1) translate(5%, 5%);
+    }
+}
+
+/* Reusable Components */
 /* Completed: dimmer but readable */
 .task-item.completed {
     opacity: 0.4;
