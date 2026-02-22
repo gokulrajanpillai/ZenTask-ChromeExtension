@@ -80,8 +80,7 @@ if (app) {
             timerState,
             () => chrome.runtime.sendMessage({ type: 'START_TIMER', payload: { taskId: getActiveTaskId() } }).then(refresh),
             () => chrome.runtime.sendMessage({ type: 'PAUSE_TIMER' }).then(refresh),
-            () => chrome.runtime.sendMessage({ type: 'SKIP_TIMER' }).then(refresh),
-            () => { /* No view specific click needed for now */ }
+            () => chrome.runtime.sendMessage({ type: 'SKIP_TIMER' }).then(refresh)
         );
 
         taskList.render(
@@ -89,7 +88,6 @@ if (app) {
             timerState.activeTaskId,
             (title) => addTask(title),
             (id) => toggleTask(id),
-            (id) => startTask(id),
             (id) => deleteTask(id)
         );
 
@@ -106,10 +104,7 @@ if (app) {
             isCompleted: false,
             estimatedMinutes: 25,
             createdAt: Date.now(),
-            order: tasks.length,
-            totalTimeMs: 0,
-            sessionTimeMs: 0,
-            pomodorosCompleted: 0
+            order: tasks.length
         };
         tasks.push(newTask);
         await StorageService.saveTasks(tasks);
@@ -127,11 +122,6 @@ if (app) {
         }
     };
 
-    const startTask = async (id: string) => {
-        await chrome.runtime.sendMessage({ type: 'START_TIMER', payload: { taskId: id } });
-        refresh();
-    };
-
     const deleteTask = async (id: string) => {
         tasks = tasks.filter(t => t.id !== id);
         await StorageService.saveTasks(tasks);
@@ -140,7 +130,7 @@ if (app) {
 
     // ── Settings ─────────────────────────────────────────────────
     document.getElementById('settings-btn')?.addEventListener('click', () => {
-        new SettingsModal(() => refresh()).open();
+        new SettingsModal(() => refresh()).render();
     });
 
     // ── Init ─────────────────────────────────────────────────────
