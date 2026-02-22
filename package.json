@@ -1,6 +1,6 @@
 {
   "name": "productivitychromeextension",
-  "version": "26.3.0",
+  "version": "26.2.22",
   "description": "Google chrome extension to keep track of tasks and boost productivity",
   "main": "index.js",
   "scripts": {
