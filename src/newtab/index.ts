@@ -31,10 +31,9 @@ if (app) {
 
     // Handle resizing
     window.addEventListener('resize', () => {
-        bgCanvas.width = window.innerWidth;
-        bgCanvas.height = window.innerHeight;
+        globalVisualizer.resize();
     });
-    window.dispatchEvent(new Event('resize'));
+    globalVisualizer.resize();
 
     const header = new Header(document.getElementById('header-zone')!);
     const timerComponent = new TimerDisplay(document.getElementById('timer-section')!);
@@ -91,11 +90,8 @@ if (app) {
         }
 
         // Apply global theme class
-        const layoutEl = document.querySelector('.zen-layout');
-        if (layoutEl) {
-            layoutEl.classList.remove('theme-forest', 'theme-rain', 'theme-summer', 'theme-space');
-            layoutEl.classList.add(`theme-${currentSettings.theme}`);
-        }
+        document.body.classList.remove('theme-forest', 'theme-rain', 'theme-summer', 'theme-space');
+        document.body.classList.add(`theme-${currentSettings.theme}`);
 
         globalVisualizer.updateState(timerState, currentSettings);
         syncAmbience(timerState);
@@ -416,6 +412,10 @@ if (app) {
         if (changes['zen_settings']) {
             refresh();
         }
+    });
+
+    window.addEventListener('resize', () => {
+        globalVisualizer.resize();
     });
 
     // Listen for background updates

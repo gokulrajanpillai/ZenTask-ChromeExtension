@@ -132,37 +132,25 @@ body {
     font-size: 2.6rem;
 }
 
-/* Theme-specific Colors & Highlights */
-.theme-forest {
+/* Body-level Themes */
+body.theme-forest {
     --theme-rgb: 94, 190, 120;
 }
 
-.theme-rain {
+body.theme-rain {
     --theme-rgb: 94, 170, 239;
 }
 
-.theme-summer {
+body.theme-summer {
     --theme-rgb: 239, 190, 94;
 }
 
-.theme-space {
+body.theme-space {
     --theme-rgb: 160, 120, 239;
 }
 
-.zen-header.theme-forest .logo {
-    color: rgb(var(--theme-rgb));
-}
-
-.zen-header.theme-rain .logo {
-    color: rgb(var(--theme-rgb));
-}
-
-.zen-header.theme-summer .logo {
-    color: rgb(var(--theme-rgb));
-}
-
-.zen-header.theme-space .logo {
-    color: rgb(var(--theme-rgb));
+.zen-header .logo {
+    color: var(--accent);
 }
 
 /* Custom Pause Button Highlight */
@@ -408,11 +396,11 @@ body {
 }
 
 .timer-time.focus-glow {
-    text-shadow: 0 0 40px var(--accent-glow-strong), 0 0 80px rgba(94, 170, 239, 0.08);
+    text-shadow: 0 0 40px var(--accent-glow-strong), 0 0 80px rgba(var(--theme-rgb), 0.08);
 }
 
 .timer-time.break-glow {
-    text-shadow: 0 0 50px rgba(94, 170, 239, 0.08);
+    text-shadow: 0 0 50px rgba(var(--theme-rgb), 0.08);
 }
 
 .timer-controls {
