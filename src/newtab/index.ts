@@ -31,15 +31,15 @@ if (app) {
 
     // Handle resizing
     window.addEventListener('resize', () => {
-        bgCanvas.width = window.innerWidth;
-        bgCanvas.height = window.innerHeight;
+        globalVisualizer.resize();
     });
-    window.dispatchEvent(new Event('resize'));
+    globalVisualizer.resize();
 
     const header = new Header(document.getElementById('header-zone')!);
     const timerComponent = new TimerDisplay(document.getElementById('timer-section')!);
-    const taskListComponent = new TaskList(document.getElementById('tasks-section')!);
+    const taskList = new TaskList(document.getElementById('tasks-section')!);
     const footer = new Footer(document.getElementById('footer-zone')!);
+
     const focusViewEl = document.getElementById('focus-view')!;
 
     // State
@@ -127,7 +127,7 @@ if (app) {
             }
         );
 
-        taskListComponent.render(
+        taskList.render(
             tasks, timerState.activeTaskId,
             (title) => addTask(title),
             (id) => toggleTask(id),
@@ -415,6 +415,10 @@ if (app) {
         if (changes['zen_settings']) {
             refresh();
         }
+    });
+
+    window.addEventListener('resize', () => {
+        globalVisualizer.resize();
     });
 
     // Listen for background updates

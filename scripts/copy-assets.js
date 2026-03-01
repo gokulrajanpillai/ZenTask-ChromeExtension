@@ -13,7 +13,8 @@ if (!fs.existsSync(distDir)) {
 try {
     const files = fs.readdirSync(srcDir);
     files.forEach(file => {
-        if (file.startsWith('icon') && (file.endsWith('.png') || file.endsWith('.svg'))) {
+        const isAsset = file.endsWith('.png') || file.endsWith('.svg') || file.endsWith('.jpg');
+        if (isAsset) {
             const srcPath = path.join(srcDir, file);
             const distPath = path.join(distDir, file);
             fs.copyFileSync(srcPath, distPath);

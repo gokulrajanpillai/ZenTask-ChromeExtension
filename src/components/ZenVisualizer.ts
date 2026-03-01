@@ -28,6 +28,14 @@ export class ZenVisualizer {
     constructor(private canvas: HTMLCanvasElement) {
         this.ctx = canvas.getContext('2d')!;
         this.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        this.resize();
+    }
+
+    resize() {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        this.canvas.width = w;
+        this.canvas.height = h;
         this.initParticles();
     }
 
