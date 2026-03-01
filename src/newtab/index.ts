@@ -90,10 +90,10 @@ if (app) {
         }
 
         // Apply global theme class
-        const layoutEl = document.querySelector('.zen-layout');
-        if (layoutEl) {
-            layoutEl.classList.remove('theme-forest', 'theme-rain', 'theme-summer', 'theme-space');
-            layoutEl.classList.add(`theme-${currentSettings.theme}`);
+        const body = document.body;
+        if (body) {
+            body.classList.remove('theme-forest', 'theme-rain', 'theme-summer', 'theme-space');
+            body.classList.add(`theme-${currentSettings.theme}`);
         }
 
         globalVisualizer.updateState(timerState, currentSettings);

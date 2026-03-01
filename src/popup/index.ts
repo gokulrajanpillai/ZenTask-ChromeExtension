@@ -35,6 +35,14 @@ if (app) {
 
     const refresh = async () => {
         timerState = await chrome.runtime.sendMessage({ type: 'GET_STATE' });
+        const settings = await StorageService.getSettings(); // Fetch settings
+
+        // Apply theme to body
+        if (settings?.theme) {
+            document.body.classList.remove('theme-forest', 'theme-rain', 'theme-summer', 'theme-space');
+            document.body.classList.add(`theme-${settings.theme}`);
+        }
+
         if (timerState?.activeTaskId) {
             const tasks = await StorageService.getTasks();
             activeTask = tasks.find(t => t.id === timerState!.activeTaskId) || null;
