@@ -1,5 +1,5 @@
 import { StorageService } from '../services/storage';
-import { Settings } from '../types';
+import { Settings, AppTheme } from '../types';
 
 let activePanel: SettingsPanel | null = null;
 
@@ -150,7 +150,7 @@ export class SettingsPanel {
       breakDuration: parseInt(val('#s-break')) || 5,
       longBreakDuration: parseInt(val('#s-long')) || 15,
       cyclesBeforeLongBreak: parseInt(val('#s-cycles')) || 4,
-      theme: val('#s-theme') as any,
+      theme: val('#s-theme') as AppTheme,
       backgroundInteractions: checked('#s-bg-interact'),
       backgroundTransitions: checked('#s-bg-trans'),
       musicEnabled: checked('#s-music-enable'),

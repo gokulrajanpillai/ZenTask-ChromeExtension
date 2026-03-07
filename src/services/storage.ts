@@ -29,7 +29,7 @@ const DEFAULT_SETTINGS: Settings = {
 const DEFAULT_TIMER: TimerState = {
     isRunning: false,
     mode: 'focus',
-    remainingSeconds: 20 * 60,
+    remainingSeconds: 25 * 60,
     activeTaskId: null,
     lastTick: Date.now(),
     cyclesCompleted: 0,

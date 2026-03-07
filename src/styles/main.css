@@ -187,19 +187,7 @@ body.theme-space {
     --theme-rgb: 160, 120, 239;
 }
 
-.zen-header.theme-forest .logo {
-    color: rgb(var(--theme-rgb));
-}
-
-.zen-header.theme-rain .logo {
-    color: rgb(var(--theme-rgb));
-}
-
-.zen-header.theme-summer .logo {
-    color: rgb(var(--theme-rgb));
-}
-
-.zen-header.theme-space .logo {
+.zen-header[class*="theme-"] .logo {
     color: rgb(var(--theme-rgb));
 }
 

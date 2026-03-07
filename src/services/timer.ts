@@ -64,7 +64,6 @@ export class TimerService {
         this.state.isRunning = true;
         this.state.lastTick = Date.now();
 
-        await this.updateActiveTaskStatus(true);
         await this.saveState();
         await this.createAlarm();
         this.broadcastState();
@@ -72,7 +71,6 @@ export class TimerService {
 
     async pause() {
         this.state.isRunning = false;
-        await this.updateActiveTaskStatus(false);
         await this.saveState();
         await this.clearAlarm();
         this.broadcastState();
@@ -85,7 +83,6 @@ export class TimerService {
         this.state.remainingSeconds = this.getDurationForMode('focus');
         this.state.cyclesCompleted = 0;
 
-        await this.updateActiveTaskStatus(false);
         await this.saveState();
         await this.clearAlarm();
         this.broadcastState();
@@ -165,11 +162,6 @@ export class TimerService {
         await this.saveState();
         this.broadcastState();
         this.updateBadge();
-    }
-
-    private async updateActiveTaskStatus(_active: boolean) {
-        if (!this.state.activeTaskId) return;
-        // console.debug(`Task ${this.state.activeTaskId} active state: ${active}`);
     }
 
     private async updateTaskTime(taskId: string, elapsedMs: number) {

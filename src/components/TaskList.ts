@@ -1,5 +1,8 @@
 import { Task } from '../types';
 
+const escapeHtml = (str: string): string =>
+    str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+
 export class TaskList {
     constructor(private container: HTMLElement) { }
 
@@ -103,7 +106,7 @@ export class TaskList {
                 ${isDone ? '✓' : ''}
             </div>
             <div class="task-content">
-                <span class="task-title">${task.title}</span>
+                <span class="task-title">${escapeHtml(task.title)}</span>
                 <div class="task-meta">
                     ${isActive ? '<span class="active-badge">◉ In Focus</span>' : ''}
                     ${task.pomodorosCompleted > 0 ? `<span>${task.pomodorosCompleted} 🍅</span>` : ''}

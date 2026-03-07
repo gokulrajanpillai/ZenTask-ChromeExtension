@@ -8,6 +8,9 @@ import { SoundManager } from '../services/audio';
 import { ZenVisualizer } from '../components/ZenVisualizer';
 import { TimerState, Task, Settings, TimerMode } from '../types';
 
+const escapeHtml = (str: string): string =>
+    str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+
 const app = document.getElementById('app');
 const soundManager = new SoundManager();
 
@@ -183,7 +186,7 @@ if (app) {
         // Check if we need full rebuild or just update
         if (!focusViewEl.querySelector('.focus-timer-wrap')) {
             focusViewEl.innerHTML = `
-              <div class="focus-task-title" id="fv-task-title">${taskTitle}</div>
+              <div class="focus-task-title" id="fv-task-title">${escapeHtml(taskTitle)}</div>
               <div class="focus-timer-wrap">
                 <svg class="progress-ring" width="320" height="320">
                   <circle class="progress-ring__bg" cx="160" cy="160" r="${radius}" />
@@ -415,10 +418,6 @@ if (app) {
         if (changes['zen_settings']) {
             refresh();
         }
-    });
-
-    window.addEventListener('resize', () => {
-        globalVisualizer.resize();
     });
 
     // Listen for background updates

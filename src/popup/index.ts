@@ -107,9 +107,6 @@ if (app) {
     chrome.runtime.onMessage.addListener((message) => {
         if (message.type === 'TIMER_UPDATE') {
             timerState = message.payload;
-            render(); // fetching active task might be needed?
-            // Ideally payload should include active task name or ID is enough if we cache tasks.
-            // For now, let's re-fetch if ID changed
             if (timerState?.activeTaskId !== activeTask?.id) {
                 refresh();
             } else {
