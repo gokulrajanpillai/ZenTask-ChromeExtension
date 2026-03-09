@@ -1,10 +1,10 @@
 import { Task, TimerState, Settings } from '../types';
 
-const KEYS = {
+export const KEYS = {
     TASKS: 'zen_tasks',
     TIMER: 'zen_timer',
     SETTINGS: 'zen_settings',
-};
+} as const;
 
 const DEFAULT_SETTINGS: Settings = {
     focusDuration: 25,
@@ -44,7 +44,7 @@ export const StorageService = {
         // Migration: Check if we have tasks in sync storage and none in local
         if (tasks.length === 0) {
             const syncResult = await chrome.storage.sync.get(KEYS.TASKS);
-            const syncTasks = (syncResult[KEYS.TASKS] as any[]) || [];
+            const syncTasks = (syncResult[KEYS.TASKS] as Task[]) || [];
 
             if (syncTasks.length > 0) {
                 console.log('Migrating tasks from sync to local...');

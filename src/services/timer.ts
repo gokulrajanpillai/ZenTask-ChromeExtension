@@ -1,5 +1,5 @@
 import { TimerState, TimerMode, Settings } from '../types';
-import { StorageService } from './storage';
+import { StorageService, KEYS } from './storage';
 
 const ALARM_NAME = 'zen-timer-tick';
 
@@ -24,7 +24,7 @@ export class TimerService {
 
         // Listen for live settings changes
         StorageService.onChange((changes) => {
-            if (changes['zen_settings']) {
+            if (changes[KEYS.SETTINGS]) {
                 StorageService.getSettings().then(s => {
                     this.settings = s;
                     // If we're not running, update remaining seconds too

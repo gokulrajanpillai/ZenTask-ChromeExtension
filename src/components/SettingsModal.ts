@@ -8,7 +8,7 @@ export class SettingsPanel {
   private panel: HTMLElement;
   private settings: Settings | null = null;
   private onClose: () => void;
-  private saveTimeout: any = null;
+  private saveTimeout: ReturnType<typeof setTimeout> | null = null;
 
   constructor(onClose: () => void) {
     if (activePanel) activePanel.close();

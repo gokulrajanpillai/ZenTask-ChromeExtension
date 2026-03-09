@@ -7,9 +7,7 @@ import { StorageService } from '../services/storage';
 import { SoundManager } from '../services/audio';
 import { ZenVisualizer } from '../components/ZenVisualizer';
 import { TimerState, Task, Settings, TimerMode } from '../types';
-
-const escapeHtml = (str: string): string =>
-    str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+import { escapeHtml } from '../utils/dom';
 
 const app = document.getElementById('app');
 const soundManager = new SoundManager();

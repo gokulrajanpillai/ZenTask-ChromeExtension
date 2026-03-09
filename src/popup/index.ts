@@ -18,7 +18,7 @@ if (app) {
         </div>
         <div class="popup-active-task">
             <span id="active-task-title">No active task</span>
-            <button id="mark-done-btn" class="icon-btn" style="display:none">✓</button>
+            <button id="mark-done-btn" class="icon-btn hidden">✓</button>
         </div>
         <button id="open-newtab" class="text-btn">Open Dashboard</button>
       </div>
@@ -62,11 +62,7 @@ if (app) {
         ppBtn.textContent = timerState.isRunning ? '⏸' : '▶';
         taskTitle.textContent = activeTask ? activeTask.title : (timerState.mode === 'focus' ? 'Ready to focus' : 'Break Time');
 
-        if (activeTask && timerState.mode === 'focus') {
-            markDoneBtn.style.display = 'inline-block';
-        } else {
-            markDoneBtn.style.display = 'none';
-        }
+        markDoneBtn.classList.toggle('hidden', !(activeTask && timerState.mode === 'focus'));
     };
 
     ppBtn.addEventListener('click', () => {
