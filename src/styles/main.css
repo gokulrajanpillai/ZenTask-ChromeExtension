@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════
-   ZenTask — Ori-Inspired Dark Azure Theme
-   Mood: serene night forest, soft glow, ethereal calm
+   ZenTask — Contemporary Dark Theme  (2025/26 Refresh)
+   Mood: calm midnight, frosted glass, soft glow
    ═══════════════════════════════════════════════════════════════ */
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap');
 
@@ -18,40 +18,47 @@
     --size-small: 0.75rem;
     --size-xs: 0.7rem;
 
-    /* Backgrounds & surfaces */
-    --bg: #121417;
-    --bg-vignette: radial-gradient(ellipse at 50% 40%, #181c22 0%, #0e1014 100%);
-    --surface-1: #1a1e24;
-    --surface-2: #21262e;
-    --surface-hover: #262c36;
+    /* Backgrounds & surfaces — softer charcoal with blue tint */
+    --bg: #0f1117;
+    --bg-vignette: radial-gradient(ellipse at 50% 35%, #161b26 0%, #0c0e14 100%);
+    --surface-1: rgba(22, 26, 38, 0.65);
+    --surface-2: rgba(28, 33, 48, 0.55);
+    --surface-hover: rgba(38, 44, 62, 0.6);
+    --surface-solid: #161922;
+
+    /* Glass effect tokens */
+    --glass-blur: blur(20px);
+    --glass-border: rgba(255, 255, 255, 0.06);
+    --glass-highlight: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 60%);
 
     /* Borders */
-    --border: rgba(100, 160, 220, 0.08);
-    --border-focus: rgba(100, 180, 255, 0.25);
+    --border: rgba(100, 160, 220, 0.07);
+    --border-focus: rgba(100, 180, 255, 0.2);
 
     /* Text */
-    --text: #e2e8f0;
-    --text-secondary: #7b8a9e;
-    --text-muted: #4e5a6b;
+    --text: #e4eaf4;
+    --text-secondary: #7d8da6;
+    --text-muted: #4a5570;
 
-    /* Accent: themed luminous color - defined in body via class */
+    /* Accent: themed luminous color — defined in body via class */
     --accent: rgb(94, 170, 239);
-    /* Default fallback */
     --accent-dim: rgba(94, 170, 239, 0.8);
-    --accent-glow: rgba(94, 170, 239, 0.15);
-    --accent-glow-strong: rgba(94, 170, 239, 0.30);
+    --accent-glow: rgba(94, 170, 239, 0.12);
+    --accent-glow-strong: rgba(94, 170, 239, 0.28);
     --theme-rgb: 94, 170, 239;
 
     /* Functional */
     --success: #5ec89e;
-    --danger: #c56b6b;
+    --danger: #d06a6a;
 
     /* Spacing & Shape */
-    --radius: 10px;
-    --radius-lg: 24px;
-    --shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
-    --shadow-glow: 0 0 20px var(--accent-glow), 0 0 60px rgba(94, 170, 239, 0.05);
-    --transition: 0.25s cubic-bezier(.4, 0, .2, 1);
+    --radius: 14px;
+    --radius-lg: 28px;
+    --radius-sm: 8px;
+    --shadow: 0 4px 24px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.2);
+    --shadow-glow: 0 0 24px var(--accent-glow), 0 0 80px rgba(94, 170, 239, 0.04);
+    --transition: 0.3s cubic-bezier(.25, .46, .45, .94);
+    --transition-spring: 0.4s cubic-bezier(.175, .885, .32, 1.275);
 }
 
 /* ── Reset ────────────────────────────────────────────────────── */
@@ -79,6 +86,24 @@
     border-radius: 4px;
 }
 
+/* ── Custom Scrollbar ─────────────────────────────────────────── */
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(var(--theme-rgb), 0.15);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(var(--theme-rgb), 0.3);
+}
+
 html,
 body {
     height: 100%;
@@ -88,45 +113,69 @@ body {
     font-family: var(--font-body);
     font-size: 15px;
     font-weight: 300;
-    line-height: 1.55;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
 }
 
-/* Theme-specific Colors & Highlights - Applied to BODY */
+/* ── Theme-specific Colors ────────────────────────────────────── */
 body.theme-forest {
     --theme-rgb: 94, 190, 120;
     --accent: rgb(94, 190, 120);
     --accent-dim: rgba(94, 190, 120, 0.8);
-    --accent-glow: rgba(94, 190, 120, 0.15);
-    --accent-glow-strong: rgba(94, 190, 120, 0.30);
+    --accent-glow: rgba(94, 190, 120, 0.12);
+    --accent-glow-strong: rgba(94, 190, 120, 0.28);
 }
 
 body.theme-rain {
     --theme-rgb: 94, 170, 239;
     --accent: rgb(94, 170, 239);
     --accent-dim: rgba(94, 170, 239, 0.8);
-    --accent-glow: rgba(94, 170, 239, 0.15);
-    --accent-glow-strong: rgba(94, 170, 239, 0.30);
+    --accent-glow: rgba(94, 170, 239, 0.12);
+    --accent-glow-strong: rgba(94, 170, 239, 0.28);
 }
 
 body.theme-summer {
     --theme-rgb: 239, 190, 94;
     --accent: rgb(239, 190, 94);
     --accent-dim: rgba(239, 190, 94, 0.8);
-    --accent-glow: rgba(239, 190, 94, 0.15);
-    --accent-glow-strong: rgba(239, 190, 94, 0.30);
+    --accent-glow: rgba(239, 190, 94, 0.12);
+    --accent-glow-strong: rgba(239, 190, 94, 0.28);
 }
 
 body.theme-space {
     --theme-rgb: 160, 120, 239;
     --accent: rgb(160, 120, 239);
     --accent-dim: rgba(160, 120, 239, 0.8);
-    --accent-glow: rgba(160, 120, 239, 0.15);
-    --accent-glow-strong: rgba(160, 120, 239, 0.30);
+    --accent-glow: rgba(160, 120, 239, 0.12);
+    --accent-glow-strong: rgba(160, 120, 239, 0.28);
 }
 
+/* ── Background Effects ───────────────────────────────────────── */
+body::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba(var(--theme-rgb), 0.06) 0%, transparent 50%);
+    z-index: -2;
+    pointer-events: none;
+    animation: breathe 20s ease-in-out infinite alternate;
+}
+
+@keyframes breathe {
+    from {
+        transform: scale(1) translate(0, 0);
+        opacity: 0.6;
+    }
+    to {
+        transform: scale(1.15) translate(3%, 3%);
+        opacity: 1;
+    }
+}
 
 /* ── Layout ───────────────────────────────────────────────────── */
 .zen-bg-canvas {
@@ -144,7 +193,7 @@ body.theme-space {
     grid-template-rows: 72px 1fr 44px;
     height: 100vh;
     width: 100vw;
-    padding: 0 28px;
+    padding: 0 32px;
     position: relative;
     z-index: 1;
 }
@@ -166,77 +215,44 @@ body.theme-space {
 .header-right {
     display: flex;
     justify-content: flex-end;
-    gap: 12px;
+    gap: 8px;
 }
 
 .zen-header .logo {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: 2.2rem;
-    letter-spacing: 0.1em;
+    font-size: 2rem;
+    letter-spacing: 0.08em;
     transition: var(--transition);
     color: var(--accent);
-    /* Now uses variable directly */
+}
+
+.zen-header .logo:hover {
+    filter: brightness(1.15);
 }
 
 .logo-icon {
-    font-size: 2.6rem;
+    font-size: 2.4rem;
+    filter: drop-shadow(0 0 8px var(--accent-glow));
 }
 
-/* Theme-specific Colors & Highlights */
-.theme-forest {
-    --theme-rgb: 94, 190, 120;
-}
-
-.theme-rain {
-    --theme-rgb: 94, 170, 239;
-}
-
-.theme-summer {
-    --theme-rgb: 239, 190, 94;
-}
-
-.theme-space {
-    --theme-rgb: 160, 120, 239;
-}
+/* Theme header compat */
+.theme-forest { --theme-rgb: 94, 190, 120; }
+.theme-rain { --theme-rgb: 94, 170, 239; }
+.theme-summer { --theme-rgb: 239, 190, 94; }
+.theme-space { --theme-rgb: 160, 120, 239; }
 
 .zen-header[class*="theme-"] .logo {
     color: rgb(var(--theme-rgb));
 }
 
-/* Custom Pause Button Highlight */
-.btn-pause {
-    background: #121417 !important;
-    color: var(--accent) !important;
-    border: 1px solid rgba(var(--theme-rgb), 0.3) !important;
-    box-shadow: 0 0 0 3px rgba(var(--theme-rgb), 0.2), 0 0 20px rgba(var(--theme-rgb), 0.1) !important;
-}
-
-.btn-pause:hover {
-    background: #1a1e24 !important;
-    box-shadow: 0 0 0 4px rgba(var(--theme-rgb), 0.3), 0 0 30px rgba(var(--theme-rgb), 0.15) !important;
-}
-
-/* Active Task Highlight Refinement */
-.task-item.active {
-    background: rgba(var(--theme-rgb), 0.08);
-    border-left-color: var(--accent);
-    box-shadow: inset 0 0 16px rgba(var(--theme-rgb), 0.05),
-        0 0 0 3px rgba(var(--theme-rgb), 0.15);
-    /* Match input focus */
-    filter: brightness(1.1);
-}
-
-.active-badge {
-    color: var(--accent);
-}
-
+/* Icon buttons */
 .icon-btn {
-    background: none;
-    border: none;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -245,17 +261,24 @@ body.theme-space {
     border-radius: 12px;
     color: var(--text-secondary);
     transition: var(--transition);
+    backdrop-filter: blur(8px);
 }
 
 .icon-btn:hover {
-    background: var(--surface-hover);
+    background: rgba(var(--theme-rgb), 0.08);
     color: var(--text);
     transform: translateY(-2px);
+    border-color: rgba(var(--theme-rgb), 0.15);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.icon-btn:active {
+    transform: translateY(0);
 }
 
 .zen-icon {
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
     fill: currentColor;
 }
 
@@ -264,10 +287,10 @@ body.theme-space {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    gap: 48px;
+    gap: 56px;
     padding-top: 6vh;
     overflow: hidden;
-    transition: opacity 0.4s ease, transform 0.4s ease;
+    transition: opacity 0.45s ease, transform 0.45s ease;
 }
 
 #main-zone.hidden {
@@ -305,12 +328,12 @@ body.theme-space {
     font-size: 1.5rem;
     font-weight: 400;
     color: var(--text);
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     text-align: center;
     width: 100%;
     max-width: 600px;
     margin-bottom: 24px;
-    text-shadow: 0 0 20px var(--accent-glow-strong);
+    text-shadow: 0 0 30px var(--accent-glow-strong);
     transition: var(--transition);
 }
 
@@ -323,6 +346,21 @@ body.theme-space {
     justify-content: center;
 }
 
+/* Decorative ring glow behind progress ring */
+.focus-timer-wrap::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(var(--theme-rgb), 0.06) 0%, transparent 70%);
+    animation: ringPulse 5s ease-in-out infinite;
+}
+
+@keyframes ringPulse {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.06); opacity: 1; }
+}
+
 /* Progress ring SVG */
 .progress-ring {
     position: absolute;
@@ -333,7 +371,7 @@ body.theme-space {
 
 .progress-ring__bg {
     fill: none;
-    stroke: var(--surface-2);
+    stroke: rgba(var(--theme-rgb), 0.08);
     stroke-width: 3;
 }
 
@@ -343,7 +381,7 @@ body.theme-space {
     stroke-width: 3;
     stroke-linecap: round;
     transition: stroke-dashoffset 1s linear;
-    filter: drop-shadow(0 0 6px var(--accent-glow));
+    filter: drop-shadow(0 0 8px var(--accent-glow));
 }
 
 .focus-time {
@@ -352,7 +390,7 @@ body.theme-space {
     font-weight: 300;
     color: var(--text);
     font-variant-numeric: tabular-nums;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
     text-shadow: 0 0 40px var(--accent-glow-strong);
     position: relative;
     z-index: 2;
@@ -367,7 +405,7 @@ body.theme-space {
     font-weight: 500;
     color: var(--accent);
     text-transform: uppercase;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.18em;
     margin-top: 4px;
 }
 
@@ -378,39 +416,43 @@ body.theme-space {
 }
 
 .focus-exit-btn {
-    margin-top: 12px;
-    background: none;
-    border: none;
+    margin-top: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
     color: var(--text-muted);
     font-family: var(--font-body);
     font-size: var(--size-small);
     cursor: pointer;
-    padding: 6px 16px;
-    border-radius: 6px;
+    padding: 8px 20px;
+    border-radius: var(--radius);
     transition: var(--transition);
+    backdrop-filter: blur(8px);
 }
 
 .focus-exit-btn:hover {
     color: var(--text-secondary);
-    background: var(--surface-2);
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(var(--theme-rgb), 0.12);
 }
 
 .focus-show-tasks-btn {
     margin-top: 8px;
     background: var(--surface-2);
-    border: 1px solid var(--border);
+    border: 1px solid var(--glass-border);
     color: var(--text-secondary);
     font-family: var(--font-body);
     font-size: var(--size-small);
     cursor: pointer;
-    padding: 6px 16px;
+    padding: 8px 20px;
     border-radius: var(--radius-lg);
     transition: var(--transition);
+    backdrop-filter: var(--glass-blur);
 }
 
 .focus-show-tasks-btn:hover {
-    border-color: var(--accent-dim);
+    border-color: rgba(var(--theme-rgb), 0.2);
     color: var(--text);
+    background: rgba(var(--theme-rgb), 0.06);
 }
 
 /* Focus view canvas */
@@ -434,6 +476,37 @@ body.theme-space {
 .timer-container {
     text-align: center;
     position: relative;
+    width: 300px;
+    height: 300px;
+    cursor: pointer;
+}
+
+.timer-inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+/* Decorative ambient ring behind timer */
+.timer-ring-deco {
+    position: absolute;
+    inset: -24px;
+    border-radius: 50%;
+    border: 1px solid rgba(var(--theme-rgb), 0.06);
+    animation: ringPulse 6s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.timer-ring-deco::after {
+    content: '';
+    position: absolute;
+    inset: -12px;
+    border-radius: 50%;
+    border: 1px solid rgba(var(--theme-rgb), 0.03);
 }
 
 .timer-time {
@@ -442,7 +515,7 @@ body.theme-space {
     font-weight: 300;
     font-variant-numeric: tabular-nums;
     color: var(--text);
-    letter-spacing: 2px;
+    letter-spacing: 3px;
     text-shadow: 0 0 30px var(--accent-glow);
     transition: text-shadow 1s ease;
     min-width: 220px;
@@ -454,85 +527,117 @@ body.theme-space {
     0% {
         text-shadow: 0 0 30px var(--accent-glow);
     }
-
     50% {
-        text-shadow: 0 0 50px var(--accent-glow-strong), 0 0 10px var(--accent);
+        text-shadow: 0 0 50px var(--accent-glow-strong), 0 0 12px var(--accent);
     }
-
     100% {
         text-shadow: 0 0 30px var(--accent-glow);
     }
 }
 
 .timer-time.focus-glow {
-    text-shadow: 0 0 40px var(--accent-glow-strong), 0 0 80px rgba(94, 170, 239, 0.08);
+    text-shadow: 0 0 40px var(--accent-glow-strong), 0 0 80px rgba(var(--theme-rgb), 0.08);
 }
 
 .timer-time.break-glow {
-    text-shadow: 0 0 50px rgba(94, 170, 239, 0.08);
+    text-shadow: 0 0 50px rgba(var(--theme-rgb), 0.06);
 }
 
 .timer-controls {
-    margin-top: 28px;
+    margin-top: 32px;
     display: flex;
     gap: 12px;
     justify-content: center;
 }
 
 .status-indicator {
-    margin-top: 20px;
+    margin-top: 22px;
     font-family: var(--font-display);
     font-size: var(--size-small);
     color: var(--accent);
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
+    opacity: 0.85;
 }
 
 /* ═══ BUTTONS ═════════════════════════════════════════════════ */
 .btn-primary {
-    background: var(--accent);
+    background: linear-gradient(135deg, var(--accent), var(--accent-dim));
     color: #0e1014;
     border: none;
-    padding: 10px 28px;
+    padding: 11px 30px;
     border-radius: var(--radius-lg);
     font-family: var(--font-body);
     font-size: var(--size-body);
     font-weight: 600;
     cursor: pointer;
     transition: var(--transition);
-    box-shadow: 0 0 16px var(--accent-glow), 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 20px var(--accent-glow), 0 4px 16px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--glass-highlight);
+    border-radius: inherit;
+    pointer-events: none;
 }
 
 .btn-primary:hover {
-    background: var(--accent-dim);
-    transform: translateY(-1px);
-    box-shadow: 0 0 24px var(--accent-glow-strong), 0 4px 16px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 0 32px var(--accent-glow-strong), 0 8px 24px rgba(0, 0, 0, 0.35);
+    filter: brightness(1.1);
 }
 
 .btn-primary:active {
-    background: #3e7fc0;
-    box-shadow: 0 0 8px var(--accent-glow);
     transform: translateY(0);
+    box-shadow: 0 0 12px var(--accent-glow);
+    filter: brightness(0.95);
+}
+
+/* Pause button variant */
+.btn-pause {
+    background: rgba(14, 16, 20, 0.8) !important;
+    color: var(--accent) !important;
+    border: 1px solid rgba(var(--theme-rgb), 0.25) !important;
+    box-shadow: 0 0 0 3px rgba(var(--theme-rgb), 0.12), 0 0 24px rgba(var(--theme-rgb), 0.08) !important;
+    backdrop-filter: var(--glass-blur);
+}
+
+.btn-pause::before {
+    display: none;
+}
+
+.btn-pause:hover {
+    background: rgba(22, 25, 34, 0.9) !important;
+    box-shadow: 0 0 0 4px rgba(var(--theme-rgb), 0.2), 0 0 32px rgba(var(--theme-rgb), 0.12) !important;
 }
 
 .btn-secondary {
     background: var(--surface-2);
     color: var(--text);
-    border: 1px solid var(--border);
-    padding: 10px 18px;
+    border: 1px solid var(--glass-border);
+    padding: 11px 20px;
     border-radius: var(--radius-lg);
     font-family: var(--font-body);
     font-size: var(--size-body);
     font-weight: 500;
     cursor: pointer;
     transition: var(--transition);
+    backdrop-filter: var(--glass-blur);
 }
 
 .btn-secondary:hover {
-    border-color: var(--accent-dim);
-    background: var(--surface-hover);
+    border-color: rgba(var(--theme-rgb), 0.2);
+    background: rgba(var(--theme-rgb), 0.06);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .btn-secondary:active {
+    transform: translateY(0);
     background: var(--surface-1);
 }
 
@@ -540,7 +645,7 @@ body.theme-space {
     background: none;
     color: var(--danger);
     border: 1px solid transparent;
-    padding: 10px 18px;
+    padding: 11px 20px;
     border-radius: var(--radius-lg);
     font-family: var(--font-body);
     font-size: var(--size-body);
@@ -550,19 +655,43 @@ body.theme-space {
 }
 
 .btn-danger:hover {
-    border-color: rgba(197, 107, 107, 0.3);
-    background: rgba(197, 107, 107, 0.06);
+    border-color: rgba(208, 106, 106, 0.25);
+    background: rgba(208, 106, 106, 0.06);
+    transform: translateY(-1px);
+}
+
+.btn-danger:active {
+    transform: translateY(0);
+}
+
+.btn-icon-compact {
+    padding: 11px 14px;
 }
 
 /* ═══ TASK LIST ═══════════════════════════════════════════════ */
 #tasks-section {
-    flex: 0 0 420px;
-    max-width: 480px;
+    flex: 0 0 440px;
+    max-width: 500px;
     background: var(--surface-1);
+    backdrop-filter: var(--glass-blur);
     border-radius: var(--radius);
-    padding: 20px;
-    border: 1px solid var(--border);
+    padding: 22px;
+    border: 1px solid var(--glass-border);
     box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Subtle glass highlight on top edge */
+#tasks-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+    pointer-events: none;
 }
 
 .task-list-panel {
@@ -576,8 +705,8 @@ body.theme-space {
     font-weight: 500;
     color: var(--text-secondary);
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 14px;
+    letter-spacing: 0.12em;
+    margin-bottom: 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -586,95 +715,112 @@ body.theme-space {
 .task-list {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
 }
 
-/* Task item */
+/* Task item — card-like rows */
 .task-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
-    border-radius: 8px;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
     cursor: pointer;
     transition: var(--transition);
     border-left: 3px solid transparent;
     position: relative;
-    filter: brightness(0.85);
+    background: rgba(255, 255, 255, 0.01);
 }
 
 .task-item:hover {
-    background: var(--surface-hover);
-    filter: brightness(0.95);
+    background: rgba(var(--theme-rgb), 0.04);
+    transform: translateX(2px);
 }
 
-/* Active task: bright, glowing, unmistakable */
+/* Active task */
 .task-item.active {
-    background: rgba(var(--theme-rgb), 0.08);
-    /* Re-asserting theme-aware bg */
+    background: rgba(var(--theme-rgb), 0.07);
     border-left: 3px solid var(--accent);
-    box-shadow: inset 0 0 16px var(--accent-glow),
-        0 0 0 3px var(--accent-glow-strong);
-    filter: brightness(1.2);
+    box-shadow: inset 0 0 20px rgba(var(--theme-rgb), 0.04),
+        0 0 0 1px rgba(var(--theme-rgb), 0.08);
     animation: activeGlowIn 0.5s ease forwards;
 }
 
-.animate-fade-in {
-    animation: fadeIn 0.6s ease-out forwards;
+.task-item.active .task-title {
+    font-weight: 500;
+    color: var(--text);
 }
 
-/* Background Effects */
-body::before {
-    content: '';
-    position: fixed;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle at center, var(--color-secondary) 0%, transparent 40%);
-    opacity: 0.1;
-    z-index: -2;
-    pointer-events: none;
-    animation: breathe 15s ease-in-out infinite alternate;
-}
-
-@keyframes breathe {
-    from {
-        transform: scale(1) translate(0, 0);
-    }
-
-    to {
-        transform: scale(1.1) translate(5%, 5%);
-    }
-}
-
-/* Reusable Components */
-/* Completed: dimmer but readable */
+/* Completed — subtle strikethrough feel */
 .task-item.completed {
-    opacity: 0.4;
-    filter: brightness(0.75);
+    opacity: 0.35;
 }
 
 .task-item.completed:hover {
-    opacity: 0.6;
+    opacity: 0.55;
 }
 
+.task-item.completed .task-title {
+    text-decoration: line-through;
+    text-decoration-color: var(--text-muted);
+}
+
+/* Staggered entrance animation */
+.task-item.animate-stagger {
+    animation: staggerFadeIn 0.4s ease-out both;
+}
+
+@keyframes staggerFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px) translateX(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) translateX(0);
+    }
+}
+
+/* Checkbox */
 .task-checkbox {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     border: 2px solid var(--text-muted);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.65rem;
-    color: var(--accent);
     flex-shrink: 0;
     transition: var(--transition);
+    position: relative;
 }
 
 .task-item.active .task-checkbox {
     border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(var(--theme-rgb), 0.08);
+}
+
+.task-item.completed .task-checkbox {
+    border-color: var(--accent);
+    background: var(--accent);
+}
+
+.task-checkbox .check-icon {
+    width: 12px;
+    height: 12px;
+    fill: none;
+    stroke: var(--bg);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: var(--transition-spring);
+}
+
+.task-item.completed .check-icon {
+    opacity: 1;
+    transform: scale(1);
 }
 
 .task-content {
@@ -687,10 +833,7 @@ body::before {
     font-size: var(--size-body);
     font-weight: 400;
     color: var(--text);
-}
-
-.task-item.active .task-title {
-    font-weight: 500;
+    transition: var(--transition);
 }
 
 .task-meta {
@@ -699,13 +842,13 @@ body::before {
     align-items: center;
     font-size: var(--size-xs);
     color: var(--text-secondary);
-    margin-top: 2px;
+    margin-top: 3px;
 }
 
 .active-badge {
     display: inline-flex;
     align-items: center;
-    gap: 3px;
+    gap: 4px;
     color: var(--accent);
     font-weight: 500;
     font-size: var(--size-xs);
@@ -720,33 +863,36 @@ body::before {
     font-size: 1rem;
     opacity: 0;
     transition: var(--transition);
+    border-radius: 6px;
 }
 
 .task-item:hover .delete-task-btn {
-    opacity: 0.6;
+    opacity: 0.5;
 }
 
 .delete-task-btn:hover {
     color: var(--danger);
     opacity: 1 !important;
+    background: rgba(208, 106, 106, 0.08);
 }
 
 /* Task Input */
 .task-input-container {
     display: flex;
     gap: 8px;
-    margin-top: 14px;
-    padding-top: 14px;
+    margin-top: 16px;
+    padding-top: 16px;
     border-top: 1px solid var(--border);
 }
 
 .task-input,
 #new-task-input {
     flex: 1;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: var(--surface-2);
-    padding: 8px 12px;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(8px);
+    padding: 10px 14px;
     font-family: var(--font-body);
     font-size: var(--size-body);
     color: var(--text);
@@ -756,8 +902,9 @@ body::before {
 
 .task-input:focus,
 #new-task-input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-glow);
+    border-color: rgba(var(--theme-rgb), 0.3);
+    box-shadow: 0 0 0 3px rgba(var(--theme-rgb), 0.08);
+    background: rgba(var(--theme-rgb), 0.03);
 }
 
 .task-input::placeholder,
@@ -768,14 +915,14 @@ body::before {
 /* ═══ TOAST BANNER ════════════════════════════════════════════ */
 .zen-toast {
     position: fixed;
-    top: 12px;
+    top: 16px;
     left: 50%;
     transform: translateX(-50%) translateY(-60px);
-    background: rgba(22, 26, 32, 0.92);
-    backdrop-filter: blur(16px);
-    border: 1px solid var(--border-focus);
+    background: rgba(22, 25, 38, 0.85);
+    backdrop-filter: blur(24px);
+    border: 1px solid var(--glass-border);
     border-radius: var(--radius-lg);
-    padding: 10px 24px;
+    padding: 10px 28px;
     font-family: var(--font-display);
     font-size: var(--size-small);
     color: var(--accent);
@@ -783,8 +930,8 @@ body::before {
     z-index: 2000;
     pointer-events: none;
     opacity: 0;
-    transition: transform 0.4s ease, opacity 0.4s ease;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 20px var(--accent-glow);
+    transition: transform 0.45s cubic-bezier(.175, .885, .32, 1.275), opacity 0.4s ease;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 24px var(--accent-glow);
 }
 
 .zen-toast.show {
@@ -796,11 +943,11 @@ body::before {
 .task-drawer-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.45);
     z-index: 900;
     opacity: 0;
-    transition: opacity 0.3s ease;
-    backdrop-filter: blur(2px);
+    transition: opacity 0.35s ease;
+    backdrop-filter: blur(3px);
 }
 
 .task-drawer-overlay.visible {
@@ -810,14 +957,15 @@ body::before {
 .task-drawer {
     position: fixed;
     top: 0;
-    right: -440px;
-    width: 420px;
+    right: -460px;
+    width: 440px;
     height: 100vh;
-    background: var(--surface-1);
-    border-left: 1px solid var(--border);
+    background: rgba(18, 22, 32, 0.9);
+    backdrop-filter: blur(24px);
+    border-left: 1px solid var(--glass-border);
     z-index: 901;
-    padding: 20px;
-    transition: right 0.35s cubic-bezier(.4, 0, .2, 1);
+    padding: 24px;
+    transition: right 0.4s cubic-bezier(.25, .46, .45, .94);
     overflow-y: auto;
 }
 
@@ -832,7 +980,7 @@ body::before {
     background: rgba(0, 0, 0, 0.45);
     z-index: 1000;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.35s ease;
     backdrop-filter: blur(4px);
 }
 
@@ -843,14 +991,14 @@ body::before {
 .settings-panel {
     position: fixed;
     top: 0;
-    right: -420px;
-    width: 380px;
+    right: -440px;
+    width: 400px;
     height: 100vh;
-    background: rgba(22, 26, 32, 0.92);
-    backdrop-filter: blur(20px);
-    border-left: 1px solid var(--border-focus);
-    box-shadow: -4px 0 40px rgba(0, 0, 0, 0.5);
-    transition: right 0.35s cubic-bezier(.4, 0, .2, 1);
+    background: rgba(18, 22, 32, 0.88);
+    backdrop-filter: blur(28px);
+    border-left: 1px solid var(--glass-border);
+    box-shadow: -4px 0 48px rgba(0, 0, 0, 0.5);
+    transition: right 0.4s cubic-bezier(.25, .46, .45, .94);
     overflow-y: auto;
     z-index: 1001;
     display: flex;
@@ -865,7 +1013,7 @@ body::before {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 18px 22px 14px;
+    padding: 20px 24px 16px;
     border-bottom: 1px solid var(--border);
 }
 
@@ -878,28 +1026,33 @@ body::before {
 }
 
 .settings-close-btn {
-    background: none;
-    border: none;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
     font-size: 1rem;
     cursor: pointer;
     color: var(--text-secondary);
-    padding: 4px 6px;
-    border-radius: 6px;
+    padding: 6px 8px;
+    border-radius: var(--radius-sm);
     transition: var(--transition);
 }
 
 .settings-close-btn:hover {
-    background: var(--surface-hover);
+    background: rgba(var(--theme-rgb), 0.06);
     color: var(--text);
 }
 
 .settings-body {
-    padding: 18px 22px;
+    padding: 20px 24px;
     flex: 1;
 }
 
+/* Settings group — glassmorphic cards */
 .settings-group {
-    margin-bottom: 24px;
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
 }
 
 .settings-group h3 {
@@ -907,9 +1060,10 @@ body::before {
     font-size: var(--size-xs);
     font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--text-muted);
+    letter-spacing: 0.14em;
+    color: var(--accent);
     margin-bottom: 12px;
+    opacity: 0.8;
 }
 
 .settings-group p {
@@ -922,7 +1076,11 @@ body::before {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 7px 0;
+    padding: 8px 0;
+}
+
+.setting-item + .setting-item {
+    border-top: 1px solid rgba(255, 255, 255, 0.03);
 }
 
 .setting-item label {
@@ -932,10 +1090,10 @@ body::before {
 
 .setting-item input[type="number"] {
     width: 56px;
-    padding: 5px 6px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: var(--surface-2);
+    padding: 6px 8px;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.03);
     font-family: var(--font-body);
     font-size: var(--size-body);
     color: var(--text);
@@ -945,15 +1103,15 @@ body::before {
 }
 
 .setting-item input[type="number"]:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 2px var(--accent-glow);
+    border-color: rgba(var(--theme-rgb), 0.3);
+    box-shadow: 0 0 0 2px rgba(var(--theme-rgb), 0.08);
 }
 
 .setting-item select {
-    padding: 5px 8px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: var(--surface-2);
+    padding: 6px 10px;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.03);
     font-family: var(--font-body);
     font-size: var(--size-body);
     color: var(--text);
@@ -962,9 +1120,14 @@ body::before {
     transition: var(--transition);
 }
 
+.setting-item select option {
+    background: var(--surface-solid);
+    color: var(--text);
+}
+
 .setting-item select:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 2px var(--accent-glow);
+    border-color: rgba(var(--theme-rgb), 0.3);
+    box-shadow: 0 0 0 2px rgba(var(--theme-rgb), 0.08);
 }
 
 .setting-item input[type="range"] {
@@ -972,15 +1135,45 @@ body::before {
     accent-color: var(--accent);
 }
 
+/* Toggle switch for checkboxes */
 .setting-item input[type="checkbox"] {
-    accent-color: var(--accent);
+    -webkit-appearance: none;
+    appearance: none;
+    width: 40px;
+    height: 22px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 11px;
+    position: relative;
+    cursor: pointer;
+    transition: var(--transition);
+    border: 1px solid var(--glass-border);
+}
+
+.setting-item input[type="checkbox"]::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
     width: 16px;
     height: 16px;
-    cursor: pointer;
+    border-radius: 50%;
+    background: var(--text-muted);
+    transition: var(--transition-spring);
+}
+
+.setting-item input[type="checkbox"]:checked {
+    background: rgba(var(--theme-rgb), 0.25);
+    border-color: rgba(var(--theme-rgb), 0.3);
+}
+
+.setting-item input[type="checkbox"]:checked::before {
+    transform: translateX(18px);
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent-glow);
 }
 
 .settings-footer {
-    padding: 14px 22px;
+    padding: 16px 24px;
     border-top: 1px solid var(--border);
 }
 
@@ -995,25 +1188,109 @@ footer {
     font-size: var(--size-small);
     color: var(--text-secondary);
     display: flex;
-    gap: 6px;
+    gap: 8px;
     align-items: center;
     animation: fadeIn 0.6s ease;
+    background: rgba(255, 255, 255, 0.02);
+    padding: 6px 18px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(8px);
 }
 
 .empty-state {
     text-align: center;
-    padding: 40px;
+    padding: 48px 20px;
     color: var(--text-muted);
     font-size: var(--size-body);
+    font-style: italic;
+}
+
+/* ═══ POPUP ═══════════════════════════════════════════════════ */
+.popup-container {
+    width: 280px;
+    padding: 20px;
+    background: var(--bg);
+    background-image: var(--bg-vignette);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    font-family: var(--font-body);
+}
+
+.popup-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.zen-logo-small {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+}
+
+.popup-timer {
+    text-align: center;
+}
+
+.popup-time-display {
+    font-family: var(--font-body);
+    font-size: 2.8rem;
+    font-weight: 300;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 2px;
+    color: var(--text);
+    text-shadow: 0 0 20px var(--accent-glow);
+}
+
+.popup-controls {
+    margin-top: 12px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.popup-active-task {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 10px 14px;
+    background: var(--surface-1);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    font-size: var(--size-body);
+    color: var(--text-secondary);
+}
+
+.text-btn {
+    background: none;
+    border: 1px solid var(--glass-border);
+    color: var(--accent);
+    font-family: var(--font-body);
+    font-size: var(--size-small);
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: center;
+}
+
+.text-btn:hover {
+    background: rgba(var(--theme-rgb), 0.06);
+    border-color: rgba(var(--theme-rgb), 0.2);
 }
 
 /* ═══ ANIMATIONS ══════════════════════════════════════════════ */
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(6px);
+        transform: translateY(8px);
     }
-
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1022,17 +1299,19 @@ footer {
 
 @keyframes activeGlowIn {
     from {
-        box-shadow: inset 0 0 0 rgba(94, 170, 239, 0), 0 0 0 rgba(94, 170, 239, 0);
+        box-shadow: inset 0 0 0 rgba(var(--theme-rgb), 0), 0 0 0 rgba(var(--theme-rgb), 0);
     }
-
     to {
-        box-shadow: inset 0 0 16px rgba(94, 170, 239, 0.05), 0 0 16px rgba(94, 170, 239, 0.04);
+        box-shadow: inset 0 0 20px rgba(var(--theme-rgb), 0.04), 0 0 0 1px rgba(var(--theme-rgb), 0.08);
     }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
 }
 
 /* ═══ REDUCE MOTION ═══════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
-
     *,
     *::before,
     *::after {

@@ -12,6 +12,7 @@ export class TaskList {
         onStartTask: (id: string) => void,
         onDeleteTask: (id: string) => void
     ) {
+        this.taskIndex = 0;
         const sortedTasks = [...tasks].sort((a, b) => {
             if (a.id === activeTaskId) return -1;
             if (b.id === activeTaskId) return 1;
@@ -36,7 +37,7 @@ export class TaskList {
                     
                     <div class="task-input-container">
                         <input type="text" id="new-task-input" class="task-input" placeholder="What is your next focus?" />
-                        <button id="add-task-btn" class="btn-secondary" style="padding:10px 16px;">+</button>
+                        <button id="add-task-btn" class="btn-secondary btn-icon-compact">+</button>
                     </div>
                 </div>
             `;
@@ -91,17 +92,21 @@ export class TaskList {
         });
     }
 
+    private taskIndex = 0;
+
     private renderTaskRow(task: Task, activeTaskId: string | null): string {
         const isActive = task.id === activeTaskId;
         const isDone = task.isCompleted;
+        const delay = this.taskIndex * 0.05;
+        this.taskIndex++;
 
         const totalMinutes = Math.floor((task.totalTimeMs || 0) / 60000);
         const timeDisplay = totalMinutes > 0 ? `${Math.floor(totalMinutes / 60)}h ${totalMinutes % 60}m` : '';
 
         return `
-        <div class="task-item ${isActive ? 'active' : ''} ${isDone ? 'completed' : ''}" data-id="${task.id}">
+        <div class="task-item animate-stagger ${isActive ? 'active' : ''} ${isDone ? 'completed' : ''}" data-id="${task.id}" style="animation-delay: ${delay}s">
             <div class="task-checkbox">
-                ${isDone ? '✓' : ''}
+                <svg class="check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg>
             </div>
             <div class="task-content">
                 <span class="task-title">${escapeHtml(task.title)}</span>

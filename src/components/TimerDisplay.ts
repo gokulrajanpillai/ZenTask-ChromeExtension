@@ -9,15 +9,16 @@ export class TimerDisplay {
 
     if (!this.container.querySelector('.timer-container')) {
       this.container.innerHTML = `
-        <div class="timer-container" style="position:relative; width:300px; height:300px; cursor: pointer;">
-          <div style="position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
+        <div class="timer-container" data-clickable>
+          <div class="timer-ring-deco"></div>
+          <div class="timer-inner">
             <div class="timer-time" id="time-display">${minutes}:${seconds}</div>
 
             <div class="timer-controls">
               <button id="main-action-btn" class="btn-primary ${state.isRunning ? 'btn-pause' : ''}">
                 ${state.isRunning ? 'Pause' : 'Start Focus'}
               </button>
-              <button id="skip-btn" class="btn-secondary" style="padding:10px 14px;">⏭</button>
+              <button id="skip-btn" class="btn-secondary btn-icon-compact">⏭</button>
             </div>
 
             <div class="status-indicator" id="status-text">${this.getStatusText(state)}</div>

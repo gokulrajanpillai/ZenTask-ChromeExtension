@@ -224,13 +224,13 @@ if (app) {
             if (timerState.isRunning) {
                 controlsEl.innerHTML = `
                   <button class="btn-primary btn-pause" id="fv-pause">Pause</button>
-                  <button class="btn-secondary" id="fv-skip" style="padding:10px 14px;">⏭</button>
+                  <button class="btn-secondary btn-icon-compact" id="fv-skip">⏭</button>
                 `;
             } else {
                 controlsEl.innerHTML = `
                   <button class="btn-primary" id="fv-resume">Resume</button>
                   <button class="btn-danger" id="fv-stop">Stop</button>
-                  <button class="btn-secondary" id="fv-skip" style="padding:10px 14px;">⏭</button>
+                  <button class="btn-secondary btn-icon-compact" id="fv-skip">⏭</button>
                 `;
             }
 
